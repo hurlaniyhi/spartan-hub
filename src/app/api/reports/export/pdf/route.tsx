@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { format } from "date-fns";
+import { readFile } from "fs/promises";
+import path from "path";
+import { renderToBuffer } from "@react-pdf/renderer";
 import { requireAdmin } from "@/lib/require-admin";
 import { getStatisticsAsOf } from "@/lib/reports";
-import { toCsv } from "@/lib/csv";
+import { StatisticsReportDocument } from "@/lib/pdf/StatisticsReportDocument";
 
 export async function GET(request: NextRequest) {
   const { unauthorized } = await requireAdmin();
@@ -18,27 +21,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Session not found" }, { status: 404 });
   }
 
-  const cutoffLabel = format(report.cutoffDate, "yyyy-MM-dd");
-  const csv = toCsv([
-    [`Spartan FC Statistics — ${format(report.cutoffDate, "d MMMM yyyy")}`],
-    [],
-    ["Player", "Appearances", "Goals", "Assists", "G/A", "Wins", "Draws", "Losses"],
-    ...report.rows.map((row) => [
-      row.name,
-      row.appearances,
-      row.goals,
-      row.assists,
-      row.goalInvolvements,
-      row.wins,
-      row.draws,
-      row.losses,
-    ]),
-  ]);
+  const logo = await readFile(path.join(process.cwd(), "public/images/spartan-logo.jpeg"));
 
-  return new NextResponse(csv, {
+  const buffer = await renderToBuffer(
+    <StatisticsReportDocument rows={report.rows} cutoffDate={report.cutoffDate} logo={logo} />
+  );
+
+  const cutoffLabel = format(report.cutoffDate, "yyyy-MM-dd");
+
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
-      "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="spartan-fc-statistics-${cutoffLabel}.csv"`,
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="spartan-fc-statistics-${cutoffLabel}.pdf"`,
     },
   });
 }

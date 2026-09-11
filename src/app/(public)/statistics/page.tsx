@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Trophy, Target, Users, Zap } from "lucide-react";
+import { Trophy, Users, Zap, SportShoe, BarChart3 } from "lucide-react";
+import { PageHero } from "@/components/layout/PageHero";
 import { LeaderboardCard } from "@/components/statistics/LeaderboardCard";
+import { SeasonSwitcher } from "@/components/statistics/SeasonSwitcher";
 import { cn } from "@/lib/cn";
-import { getLeaderboard, type StatsScope } from "@/lib/stats";
+import { getLeaderboard, getAvailableSeasons, type StatsScope } from "@/lib/stats";
 import { formatDecimal } from "@/lib/format";
+import { currentSeason, isValidSeasonSelection, resolveSeasonFilter } from "@/lib/slugify";
 
 export const dynamic = "force-dynamic";
 
@@ -22,58 +25,78 @@ const SCOPES: { value: StatsScope; label: string }[] = [
 export default async function StatisticsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ scope?: string }>;
+  searchParams: Promise<{ scope?: string; season?: string }>;
 }) {
-  const { scope: rawScope } = await searchParams;
+  const { scope: rawScope, season: requestedSeason } = await searchParams;
   const scope: StatsScope = ["overall", "training", "match"].includes(rawScope ?? "")
     ? (rawScope as StatsScope)
     : "overall";
 
+  const seasons = await getAvailableSeasons();
+  const season = isValidSeasonSelection(requestedSeason, seasons) ? requestedSeason : currentSeason();
+  const seasonFilter = resolveSeasonFilter(season);
+
   // Sequential rather than Promise.all — see the comment in getTeamSnapshot.
-  const topScorers = await getLeaderboard("goals", scope, 10);
-  const topAssisters = await getLeaderboard("assists", scope, 10);
-  const mostAppearances = await getLeaderboard("appearances", scope, 10);
-  const bestGoalsPerAppearance = await getLeaderboard("goalsPerAppearance", scope, 10);
+  const topScorers = await getLeaderboard("goals", scope, 10, seasonFilter);
+  const topAssisters = await getLeaderboard("assists", scope, 10, seasonFilter);
+  const mostAppearances = await getLeaderboard("appearances", scope, 10, seasonFilter);
+  const bestGoalsPerAppearance = await getLeaderboard("goalsPerAppearance", scope, 10, seasonFilter);
+  const mostWins = await getLeaderboard("wins", scope, 10, seasonFilter);
+
+  const scopeLink = (value: StatsScope) => {
+    const params = new URLSearchParams();
+    if (value !== "overall") params.set("scope", value);
+    if (season !== currentSeason()) params.set("season", season);
+    const query = params.toString();
+    return query ? `/statistics?${query}` : "/statistics";
+  };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-gray-900">Statistics</h1>
-          <p className="mt-1 text-sm text-gray-500">Spartan FC&apos;s leaderboards, updated after every session.</p>
-        </div>
-        <div className="flex items-center gap-1 self-start rounded-full bg-gray-100 p-1">
-          {SCOPES.map((option) => (
-            <Link
-              key={option.value}
-              href={option.value === "overall" ? "/statistics" : `/statistics?scope=${option.value}`}
-              className={cn(
-                "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-                scope === option.value ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
-              )}
-            >
-              {option.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+    <div>
+      <PageHero
+        icon={BarChart3}
+        title="Statistics"
+        subtitle="Spartan FC's leaderboards, updated after every session."
+        action={
+          <div className="flex flex-wrap items-center gap-3">
+            <SeasonSwitcher seasons={seasons} current={season} />
+            <div className="flex items-center gap-1 rounded-full bg-white/10 p-1 ring-1 ring-white/15">
+              {SCOPES.map((option) => (
+                <Link
+                  key={option.value}
+                  href={scopeLink(option.value)}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                    scope === option.value ? "bg-white text-brand-dark shadow-sm" : "text-white/70 hover:text-white"
+                  )}
+                >
+                  {option.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        }
+      />
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <LeaderboardCard title="Top Scorers" icon={Trophy} entries={topScorers} valueLabel="Goals" />
-        <LeaderboardCard title="Top Assists" icon={Target} entries={topAssisters} valueLabel="Assists" />
-        <LeaderboardCard
-          title="Most Appearances"
-          icon={Users}
-          entries={mostAppearances}
-          valueLabel="Apps"
-        />
-        <LeaderboardCard
-          title="Best Goals / Appearance"
-          icon={Zap}
-          entries={bestGoalsPerAppearance}
-          valueLabel="G/App"
-          formatValue={(value) => formatDecimal(value)}
-        />
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <LeaderboardCard title="Top Scorers" icon={Trophy} entries={topScorers} valueLabel="Goals" />
+          <LeaderboardCard title="Top Assists" icon={SportShoe} entries={topAssisters} valueLabel="Assists" />
+          <LeaderboardCard
+            title="Most Appearances"
+            icon={Users}
+            entries={mostAppearances}
+            valueLabel="Apps"
+          />
+          <LeaderboardCard
+            title="Best Goals / Appearance"
+            icon={Zap}
+            entries={bestGoalsPerAppearance}
+            valueLabel="G/App"
+            formatValue={(value) => formatDecimal(value)}
+          />
+          <LeaderboardCard title="Most Wins" icon={Trophy} entries={mostWins} valueLabel="Wins" />
+        </div>
       </div>
     </div>
   );

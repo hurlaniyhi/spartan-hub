@@ -8,9 +8,9 @@ import type { LucideIcon } from "lucide-react";
 import { Trophy } from "lucide-react";
 
 const RANK_STYLES = [
-  "bg-amber-100 text-amber-700", // gold
-  "bg-gray-200 text-gray-600", // silver
-  "bg-orange-100 text-orange-700", // bronze
+  "bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-sm shadow-amber-500/40", // gold
+  "bg-gradient-to-br from-gray-300 to-gray-400 text-white shadow-sm shadow-gray-400/40", // silver
+  "bg-gradient-to-br from-orange-300 to-orange-500 text-white shadow-sm shadow-orange-500/30", // bronze
 ];
 
 export function LeaderboardCard({
@@ -27,10 +27,10 @@ export function LeaderboardCard({
   formatValue?: (value: number) => string;
 }) {
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardBody>
-        <div className="mb-4 flex items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-full bg-accent-light text-accent">
+        <div className="mb-4 flex items-center gap-2.5">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-dark text-white shadow-sm">
             <Icon className="size-4" />
           </div>
           <h2 className="font-display text-base font-bold text-gray-900">{title}</h2>
@@ -44,7 +44,10 @@ export function LeaderboardCard({
               <li key={entry.playerId}>
                 <Link
                   href={`/players/${entry.slug}`}
-                  className="flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-gray-50"
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-2.5 py-2.5 transition-colors hover:bg-gray-50",
+                    index === 0 && "bg-amber-50/70"
+                  )}
                 >
                   <span
                     className={cn(
@@ -59,7 +62,7 @@ export function LeaderboardCard({
                     <p className="truncate text-sm font-semibold text-gray-900">{entry.name}</p>
                     <p className="truncate text-xs text-gray-400">{entry.position}</p>
                   </div>
-                  <p className="font-display text-base font-bold text-gray-900">
+                  <p className="font-display text-base font-bold text-accent-dark">
                     {formatValue(entry.value)}
                     <span className="ml-1 text-xs font-medium text-gray-400">{valueLabel}</span>
                   </p>

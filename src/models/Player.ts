@@ -9,7 +9,7 @@ import {
 const playerSchema = new Schema(
   {
     firstName: { type: String, required: true, trim: true },
-    lastName: { type: String, required: true, trim: true },
+    lastName: { type: String, trim: true },
     nickname: { type: String, trim: true },
     slug: { type: String, required: true, unique: true, index: true },
     photoUrl: { type: String },

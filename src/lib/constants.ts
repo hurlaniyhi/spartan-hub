@@ -37,3 +37,7 @@ export type PlayerStatus = (typeof PLAYER_STATUSES)[number];
 
 export const SESSION_TYPES = ["training", "match"] as const;
 export type SessionType = (typeof SESSION_TYPES)[number];
+
+/** Only meaningful for matches, and only ever set when the admin chooses to record it. */
+export const MATCH_OUTCOMES = ["win", "draw", "loss"] as const;
+export type MatchOutcome = (typeof MATCH_OUTCOMES)[number];

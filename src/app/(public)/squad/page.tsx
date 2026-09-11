@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Users } from "lucide-react";
+import { PageHero } from "@/components/layout/PageHero";
 import { SquadGrid } from "@/components/players/SquadGrid";
 import { getPlayerRoster } from "@/lib/stats";
 
@@ -13,12 +15,15 @@ export default async function SquadPage() {
   const roster = await getPlayerRoster();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div className="mb-6">
-        <h1 className="font-display text-3xl font-bold text-gray-900">Squad</h1>
-        <p className="mt-1 text-sm text-gray-500">Every player who has pulled on the Spartan FC shirt.</p>
+    <div>
+      <PageHero
+        icon={Users}
+        title="Squad"
+        subtitle="Every player who has pulled on the Spartan FC shirt."
+      />
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <SquadGrid roster={roster} />
       </div>
-      <SquadGrid roster={roster} />
     </div>
   );
 }

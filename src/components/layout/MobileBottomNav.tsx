@@ -9,7 +9,7 @@ export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom)] sm:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-gray-100 bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(15,4,84,0.06)] backdrop-blur sm:hidden">
       {PUBLIC_NAV_ITEMS.map((item) => {
         const active = pathname === item.href;
         const Icon = item.icon;
@@ -17,13 +17,17 @@ export function MobileBottomNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={cn(
-              "flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition-colors",
-              active ? "text-brand" : "text-gray-400"
-            )}
+            className="flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium text-gray-400 transition-colors"
           >
-            <Icon className={cn("size-5", active && "text-brand")} />
-            {item.label}
+            <span
+              className={cn(
+                "flex size-8 items-center justify-center rounded-full transition-colors",
+                active && "bg-brand-light"
+              )}
+            >
+              <Icon className={cn("size-5", active ? "text-brand" : "text-gray-400")} />
+            </span>
+            <span className={active ? "font-semibold text-brand" : ""}>{item.label}</span>
           </Link>
         );
       })}

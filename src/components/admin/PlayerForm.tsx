@@ -8,6 +8,7 @@ import { Camera } from "lucide-react";
 import { Input, Select, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
+import { PhotoCropModal } from "@/components/admin/PhotoCropModal";
 import { useToast } from "@/components/ui/Toast";
 import { savePlayer } from "@/actions/players";
 import { playerFormSchema, type PlayerFormValues } from "@/lib/validation/player";
@@ -22,6 +23,7 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoPreview, setPhotoPreview] = useState<string | undefined>(existingPlayer?.photoUrl);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [cropSource, setCropSource] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -43,8 +45,24 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
   const onPhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    setPhotoFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
+    // Opens the crop dialog rather than using the file directly, so the
+    // admin can position/zoom the shot before it's saved as the avatar.
+    setCropSource(URL.createObjectURL(file));
+  };
+
+  const handleCropConfirm = (blob: Blob) => {
+    if (cropSource) URL.revokeObjectURL(cropSource);
+    setCropSource(null);
+    const croppedFile = new File([blob], "player-photo.jpg", { type: "image/jpeg" });
+    setPhotoFile(croppedFile);
+    setPhotoPreview(URL.createObjectURL(blob));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleCropCancel = () => {
+    if (cropSource) URL.revokeObjectURL(cropSource);
+    setCropSource(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const onSubmit = handleSubmit(async (values) => {
@@ -53,7 +71,7 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
 
     const formData = new FormData();
     formData.set("firstName", values.firstName);
-    formData.set("lastName", values.lastName);
+    if (values.lastName) formData.set("lastName", values.lastName);
     if (values.nickname) formData.set("nickname", values.nickname);
     if (values.jerseyNumber !== undefined) formData.set("jerseyNumber", String(values.jerseyNumber));
     formData.set("position", values.position);
@@ -102,13 +120,24 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
             className="hidden"
             onChange={onPhotoChange}
           />
-          <p className="mt-1.5 text-xs text-gray-400">JPG, PNG or WEBP, up to 3MB.</p>
+          <p className="mt-1.5 text-xs text-gray-400">
+            JPG, PNG or WEBP, up to 3MB. You&apos;ll be able to reposition it next.
+          </p>
         </div>
       </div>
 
+      {cropSource && (
+        <PhotoCropModal imageSrc={cropSource} onCancel={handleCropCancel} onConfirm={handleCropConfirm} />
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Input id="firstName" label="First Name" error={errors.firstName?.message} {...register("firstName")} />
-        <Input id="lastName" label="Last Name" error={errors.lastName?.message} {...register("lastName")} />
+        <Input
+          id="lastName"
+          label="Last Name (optional)"
+          error={errors.lastName?.message}
+          {...register("lastName")}
+        />
         <Input
           id="nickname"
           label="Nickname (optional)"

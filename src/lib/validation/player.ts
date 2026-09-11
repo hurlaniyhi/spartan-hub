@@ -3,7 +3,7 @@ import { POSITIONS, PLAYER_STATUSES } from "@/lib/constants";
 
 export const playerFormSchema = z.object({
   firstName: z.string().trim().min(1, "Please enter the player's first name."),
-  lastName: z.string().trim().min(1, "Please enter the player's last name."),
+  lastName: z.string().trim().max(60, "Last name is too long.").optional(),
   nickname: z.string().trim().max(40, "Nickname is too long.").optional(),
   jerseyNumber: z
     .number({ error: "Jersey number must be a number." })

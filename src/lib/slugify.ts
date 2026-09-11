@@ -6,11 +6,28 @@ export function slugify(input: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-/** Derives a season label from a date, e.g. Sep 2026 -> "2026/27" (season runs Jul–Jun). */
+/** Derives a season label from a date — a plain calendar year, e.g. "2026". */
 export function seasonForDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = date.getMonth(); // 0-indexed
-  const startYear = month >= 6 ? year : year - 1; // July (6) onward starts the new season
-  const endYearShort = String((startYear + 1) % 100).padStart(2, "0");
-  return `${startYear}/${endYearShort}`;
+  return String(date.getFullYear());
+}
+
+/** The season (calendar year) a fresh page load should default to. */
+export function currentSeason(): string {
+  return String(new Date().getFullYear());
+}
+
+/** Sentinel season value meaning "every season" — no season filter applied. */
+export const ALL_SEASONS = "all";
+
+/** Resolves a season-switcher value into the `season` arg the stats
+ * functions expect: `undefined` for ALL_SEASONS (no filter), otherwise the
+ * year itself. */
+export function resolveSeasonFilter(season: string): string | undefined {
+  return season === ALL_SEASONS ? undefined : season;
+}
+
+/** Whether a season value from a request is one the switcher can land on:
+ * either the "All Seasons" sentinel or a season that actually has data. */
+export function isValidSeasonSelection(value: string | undefined, seasons: string[]): value is string {
+  return value !== undefined && (value === ALL_SEASONS || seasons.includes(value));
 }

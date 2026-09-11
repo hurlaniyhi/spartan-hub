@@ -42,7 +42,7 @@ export async function savePlayer(
 
   const raw = {
     firstName: formData.get("firstName"),
-    lastName: formData.get("lastName"),
+    lastName: formData.get("lastName") || undefined,
     nickname: formData.get("nickname") || undefined,
     jerseyNumber: formData.get("jerseyNumber")
       ? Number(formData.get("jerseyNumber"))
@@ -103,7 +103,8 @@ export async function savePlayer(
     }
   }
 
-  const slug = existing?.slug ?? (await uniqueSlug(slugify(`${parsed.data.firstName}-${parsed.data.lastName}`)));
+  const slugSource = [parsed.data.firstName, parsed.data.lastName].filter(Boolean).join("-");
+  const slug = existing?.slug ?? (await uniqueSlug(slugify(slugSource)));
 
   if (existing) {
     existing.set({ ...parsed.data, photoUrl });

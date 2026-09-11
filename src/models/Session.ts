@@ -1,5 +1,5 @@
 import { Schema, model, models, type InferSchemaType } from "mongoose";
-import { SESSION_TYPES } from "@/lib/constants";
+import { SESSION_TYPES, MATCH_OUTCOMES } from "@/lib/constants";
 import { seasonForDate } from "@/lib/slugify";
 
 const sessionSchema = new Schema(
@@ -9,6 +9,11 @@ const sessionSchema = new Schema(
     opponent: { type: String, trim: true },
     venue: { type: String, trim: true },
     result: { type: String, trim: true },
+    // Structured win/draw/loss, distinct from the free-text `result` above —
+    // optional even for matches, since not every admin will bother logging
+    // it. When it's unset, this session never counts toward anyone's
+    // win/draw/loss totals.
+    outcome: { type: String, enum: MATCH_OUTCOMES },
     notes: { type: String, trim: true, maxlength: 2000 },
     season: { type: String, required: true, index: true },
   },

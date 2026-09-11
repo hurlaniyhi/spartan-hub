@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { Dumbbell, Swords } from "lucide-react";
+import { Dumbbell, Swords, Trophy, Handshake, ThumbsDown } from "lucide-react";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Input, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
@@ -13,7 +13,7 @@ import {
   type PerformanceState,
 } from "@/components/admin/PlayerPerformanceRow";
 import { saveSession } from "@/actions/sessions";
-import type { SessionType } from "@/lib/constants";
+import type { SessionType, MatchOutcome } from "@/lib/constants";
 import { cn } from "@/lib/cn";
 
 export type RosterPlayer = { id: string; name: string; photoUrl?: string; position: string };
@@ -25,9 +25,16 @@ export type ExistingSessionData = {
   opponent?: string;
   venue?: string;
   result?: string;
+  outcome?: MatchOutcome;
   notes?: string;
   performances: Record<string, PerformanceState>;
 };
+
+const OUTCOME_OPTIONS: { value: MatchOutcome; label: string; icon: React.ReactNode }[] = [
+  { value: "win", label: "Win", icon: <Trophy className="size-4" /> },
+  { value: "draw", label: "Draw", icon: <Handshake className="size-4" /> },
+  { value: "loss", label: "Loss", icon: <ThumbsDown className="size-4" /> },
+];
 
 export function SessionForm({
   roster,
@@ -46,6 +53,7 @@ export function SessionForm({
   const [opponent, setOpponent] = useState(existingSession?.opponent ?? "");
   const [venue, setVenue] = useState(existingSession?.venue ?? "");
   const [matchResult, setMatchResult] = useState(existingSession?.result ?? "");
+  const [outcome, setOutcome] = useState<MatchOutcome | undefined>(existingSession?.outcome);
   const [notes, setNotes] = useState(existingSession?.notes ?? "");
   const [performances, setPerformances] = useState<Record<string, PerformanceState>>(() => {
     const initial: Record<string, PerformanceState> = {};
@@ -89,6 +97,7 @@ export function SessionForm({
         opponent: type === "match" ? opponent || undefined : undefined,
         venue: type === "match" ? venue || undefined : undefined,
         result: type === "match" ? matchResult || undefined : undefined,
+        outcome: type === "match" ? outcome : undefined,
         notes: notes || undefined,
       },
       performances: roster.map((player) => ({
@@ -166,6 +175,43 @@ export function SessionForm({
                 value={matchResult}
                 onChange={(event) => setMatchResult(event.target.value)}
               />
+            </div>
+          )}
+
+          {type === "match" && (
+            <div>
+              <p className="mb-2 text-sm font-semibold text-gray-700">
+                Outcome <span className="font-normal text-gray-400">(optional)</span>
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {OUTCOME_OPTIONS.map((option) => {
+                  const active = outcome === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setOutcome(active ? undefined : option.value)}
+                      className={cn(
+                        "flex flex-col items-center justify-center gap-1 rounded-xl border-2 py-3 text-sm font-semibold transition-colors",
+                        active
+                          ? option.value === "win"
+                            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                            : option.value === "loss"
+                              ? "border-accent bg-accent-light text-accent-dark"
+                              : "border-gray-400 bg-gray-100 text-gray-700"
+                          : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+                      )}
+                    >
+                      {option.icon}
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-1.5 text-xs text-gray-400">
+                Tap again to clear. Only used to tally each player&apos;s win/draw/loss record —
+                leave it blank if you&apos;d rather not track it.
+              </p>
             </div>
           )}
 
