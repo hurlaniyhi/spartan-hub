@@ -3,6 +3,7 @@ import { PlayerModel } from "@/models/Player";
 import { SessionModel } from "@/models/Session";
 import { PlayerSessionPerformanceModel } from "@/models/PlayerSessionPerformance";
 import { displayName } from "@/lib/format";
+import { ALL_SEASONS } from "@/lib/slugify";
 
 export interface ReportRow {
   name: string;
@@ -17,6 +18,8 @@ export interface ReportRow {
 
 export interface ReportData {
   cutoffDate: Date;
+  /** "2026" for a specific season, or "All Seasons" when no season filter applies. */
+  seasonLabel: string;
   rows: ReportRow[];
 }
 
@@ -25,10 +28,15 @@ export interface ReportData {
  * cutoff are counted, so the export reflects the standings as they existed
  * at that point in time, not today's totals. Shared by both the CSV and PDF
  * export routes so the two formats can never drift apart.
+ *
+ * `season` additionally sets the lower bound: a specific year (e.g. "2026")
+ * only counts sessions from 1 January of that year onward, while omitting it
+ * (or passing the ALL_SEASONS sentinel) counts every session ever recorded.
  */
 export async function getStatisticsAsOf(params: {
   sessionId?: string | null;
   date?: string | null;
+  season?: string | null;
 }): Promise<ReportData | null> {
   await connectToDatabase();
 
@@ -44,9 +52,12 @@ export async function getStatisticsAsOf(params: {
     cutoffDate = new Date();
   }
 
-  const sessionsUpToCutoff = await SessionModel.find({ date: { $lte: cutoffDate } })
-    .select("_id")
-    .lean();
+  const season = params.season && params.season !== ALL_SEASONS ? params.season : undefined;
+  const sessionMatch: Record<string, unknown> = season
+    ? { date: { $gte: new Date(Number(season), 0, 1), $lte: cutoffDate } }
+    : { date: { $lte: cutoffDate } };
+
+  const sessionsUpToCutoff = await SessionModel.find(sessionMatch).select("_id").lean();
   const sessionIds = sessionsUpToCutoff.map((s) => s._id);
 
   const totals = await PlayerSessionPerformanceModel.aggregate([
@@ -102,5 +113,5 @@ export async function getStatisticsAsOf(params: {
         a.name.localeCompare(b.name)
     );
 
-  return { cutoffDate, rows };
+  return { cutoffDate, seasonLabel: season ? `${season} Season` : "All Seasons", rows };
 }

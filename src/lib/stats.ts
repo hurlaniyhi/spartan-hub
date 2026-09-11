@@ -307,10 +307,10 @@ export interface SessionSummary {
   assists: number;
 }
 
-export async function getSessionSummaries(limit?: number): Promise<SessionSummary[]> {
+export async function getSessionSummaries(limit?: number, season?: string): Promise<SessionSummary[]> {
   await connectToDatabase();
 
-  const sessions = await SessionModel.find()
+  const sessions = await SessionModel.find(season ? { season } : {})
     .sort({ date: -1 })
     .limit(limit ?? 0)
     .lean();

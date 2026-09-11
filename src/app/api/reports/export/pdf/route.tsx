@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
   const report = await getStatisticsAsOf({
     sessionId: searchParams.get("sessionId"),
     date: searchParams.get("date"),
+    season: searchParams.get("season"),
   });
 
   if (!report) {
@@ -24,7 +25,12 @@ export async function GET(request: NextRequest) {
   const logo = await readFile(path.join(process.cwd(), "public/images/spartan-logo.jpeg"));
 
   const buffer = await renderToBuffer(
-    <StatisticsReportDocument rows={report.rows} cutoffDate={report.cutoffDate} logo={logo} />
+    <StatisticsReportDocument
+      rows={report.rows}
+      cutoffDate={report.cutoffDate}
+      seasonLabel={report.seasonLabel}
+      logo={logo}
+    />
   );
 
   const cutoffLabel = format(report.cutoffDate, "yyyy-MM-dd");

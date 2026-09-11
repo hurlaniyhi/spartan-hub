@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
   const report = await getStatisticsAsOf({
     sessionId: searchParams.get("sessionId"),
     date: searchParams.get("date"),
+    season: searchParams.get("season"),
   });
 
   if (!report) {
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
 
   const cutoffLabel = format(report.cutoffDate, "yyyy-MM-dd");
   const csv = toCsv([
-    [`Spartan FC Statistics — ${format(report.cutoffDate, "d MMMM yyyy")}`],
+    [`Spartan FC Statistics — ${report.seasonLabel} — ${format(report.cutoffDate, "d MMMM yyyy")}`],
     [],
     ["Player", "Appearances", "Goals", "Assists", "G/A", "Wins", "Draws", "Losses"],
     ...report.rows.map((row) => [

@@ -73,13 +73,10 @@ const styles = StyleSheet.create({
   rankText: { fontSize: 9, color: "#9CA3AF" },
   colRank: { width: 30, flexDirection: "row", alignItems: "center" },
   colName: { flex: 1, fontFamily: "Helvetica-Bold", color: "#111827" },
-  colStat: { width: 48, textAlign: "center" },
+  colStat: { width: 70, textAlign: "center" },
   goalsText: { color: BRAND_DARK, fontFamily: "Helvetica-Bold" },
   assistsText: { color: ACCENT, fontFamily: "Helvetica-Bold" },
   gaText: { color: "#111827", fontFamily: "Helvetica-Bold" },
-  winsText: { color: "#059669", fontFamily: "Helvetica-Bold" },
-  drawsText: { color: "#6B7280", fontFamily: "Helvetica-Bold" },
-  lossesText: { color: ACCENT, fontFamily: "Helvetica-Bold" },
   emptyState: {
     textAlign: "center",
     color: "#9CA3AF",
@@ -101,10 +98,12 @@ const styles = StyleSheet.create({
 export function StatisticsReportDocument({
   rows,
   cutoffDate,
+  seasonLabel,
   logo,
 }: {
   rows: ReportRow[];
   cutoffDate: Date;
+  seasonLabel: string;
   logo: Buffer;
 }) {
   const totals = rows.reduce(
@@ -112,16 +111,13 @@ export function StatisticsReportDocument({
       appearances: acc.appearances + row.appearances,
       goals: acc.goals + row.goals,
       assists: acc.assists + row.assists,
-      wins: acc.wins + row.wins,
-      draws: acc.draws + row.draws,
-      losses: acc.losses + row.losses,
     }),
-    { appearances: 0, goals: 0, assists: 0, wins: 0, draws: 0, losses: 0 }
+    { appearances: 0, goals: 0, assists: 0 }
   );
 
   return (
     <Document
-      title={`Spartan FC Statistics — ${format(cutoffDate, "d MMMM yyyy")}`}
+      title={`Spartan FC Statistics — ${seasonLabel} — ${format(cutoffDate, "d MMMM yyyy")}`}
       author="Spartan Hub"
     >
       <Page size="A4" style={styles.page}>
@@ -131,7 +127,7 @@ export function StatisticsReportDocument({
           <View>
             <Text style={styles.headerTitle}>SPARTAN FC</Text>
             <Text style={styles.headerSubtitle}>
-              Statistics as of {format(cutoffDate, "d MMMM yyyy")}
+              {seasonLabel} · Statistics as of {format(cutoffDate, "d MMMM yyyy")}
             </Text>
           </View>
         </View>
@@ -157,21 +153,6 @@ export function StatisticsReportDocument({
             </View>
           </View>
 
-          <View style={styles.summaryRow}>
-            <View style={styles.summaryCard}>
-              <Text style={[styles.summaryValue, { color: "#059669" }]}>{totals.wins}</Text>
-              <Text style={styles.summaryLabel}>Wins</Text>
-            </View>
-            <View style={styles.summaryCard}>
-              <Text style={[styles.summaryValue, { color: "#6B7280" }]}>{totals.draws}</Text>
-              <Text style={styles.summaryLabel}>Draws</Text>
-            </View>
-            <View style={styles.summaryCard}>
-              <Text style={[styles.summaryValue, { color: ACCENT }]}>{totals.losses}</Text>
-              <Text style={styles.summaryLabel}>Losses</Text>
-            </View>
-          </View>
-
           <View style={styles.table}>
             <View style={styles.tableHeaderRow}>
               <Text style={[styles.tableHeaderCell, styles.colRank]}>#</Text>
@@ -180,9 +161,6 @@ export function StatisticsReportDocument({
               <Text style={[styles.tableHeaderCell, styles.colStat]}>Goals</Text>
               <Text style={[styles.tableHeaderCell, styles.colStat]}>Assists</Text>
               <Text style={[styles.tableHeaderCell, styles.colStat]}>G/A</Text>
-              <Text style={[styles.tableHeaderCell, styles.colStat]}>W</Text>
-              <Text style={[styles.tableHeaderCell, styles.colStat]}>D</Text>
-              <Text style={[styles.tableHeaderCell, styles.colStat]}>L</Text>
             </View>
 
             {rows.length === 0 ? (
@@ -208,9 +186,6 @@ export function StatisticsReportDocument({
                   <Text style={[styles.colStat, styles.goalsText]}>{row.goals}</Text>
                   <Text style={[styles.colStat, styles.assistsText]}>{row.assists}</Text>
                   <Text style={[styles.colStat, styles.gaText]}>{row.goalInvolvements}</Text>
-                  <Text style={[styles.colStat, styles.winsText]}>{row.wins}</Text>
-                  <Text style={[styles.colStat, styles.drawsText]}>{row.draws}</Text>
-                  <Text style={[styles.colStat, styles.lossesText]}>{row.losses}</Text>
                 </View>
               ))
             )}
