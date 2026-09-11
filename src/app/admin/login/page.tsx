@@ -3,7 +3,8 @@
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, ArrowLeft } from "lucide-react";
 import { loginAction } from "@/actions/auth";
 import { Input } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
@@ -20,15 +21,34 @@ export default function AdminLoginPage() {
   }, [state, router]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-brand-dark px-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+      <div className="absolute inset-0">
+        <Image
+          src="/images/team-3.jpeg"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/90 via-brand-dark/80 to-brand-dark" />
+      </div>
+
+      <Link
+        href="/"
+        className="absolute top-6 left-6 z-10 flex items-center gap-1.5 text-sm font-medium text-white/70 transition-colors hover:text-white"
+      >
+        <ArrowLeft className="size-4" />
+        Back to Player View
+      </Link>
+
+      <div className="relative w-full max-w-sm rounded-2xl bg-white p-8 shadow-2xl">
         <div className="mb-6 flex flex-col items-center text-center">
           <Image
             src="/images/spartan-logo.jpeg"
             alt="Spartan FC crest"
             width={64}
             height={64}
-            className="mb-3 rounded-full"
+            className="mb-3 rounded-full shadow-md"
           />
           <h1 className="font-display text-xl font-bold text-gray-900">Admin Sign In</h1>
           <p className="mt-1 text-sm text-gray-500">Manage the Spartan FC squad and sessions.</p>

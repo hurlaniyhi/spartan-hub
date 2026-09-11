@@ -4,6 +4,7 @@ import { PlayerModel } from "@/models/Player";
 import { SessionModel } from "@/models/Session";
 import { PlayerSessionPerformanceModel } from "@/models/PlayerSessionPerformance";
 import { displayName } from "@/lib/format";
+import { currentSeason } from "@/lib/slugify";
 import type { SessionType, PlayerStatus } from "@/lib/constants";
 
 /**
@@ -13,14 +14,38 @@ import type { SessionType, PlayerStatus } from "@/lib/constants";
  */
 export type StatsScope = "overall" | SessionType;
 
-function sessionTypeMatchStage(scope: StatsScope) {
-  return scope === "overall" ? [] : [{ $match: { "session.type": scope } }];
+/** Win/draw/loss only ever counts for a session the player actually
+ * attended, and only when the admin chose to record an outcome for it —
+ * everything else is silently excluded rather than treated as a loss. */
+const WIN_LOSS_DRAW_ACCUMULATORS = {
+  wins: { $sum: { $cond: [{ $and: ["$attended", { $eq: ["$session.outcome", "win"] }] }, 1, 0] } },
+  draws: { $sum: { $cond: [{ $and: ["$attended", { $eq: ["$session.outcome", "draw"] }] }, 1, 0] } },
+  losses: { $sum: { $cond: [{ $and: ["$attended", { $eq: ["$session.outcome", "loss"] }] }, 1, 0] } },
+};
+
+function sessionMatchStage(scope: StatsScope, season?: string) {
+  const match: Record<string, unknown> = {};
+  if (scope !== "overall") match["session.type"] = scope;
+  if (season) match["session.season"] = season;
+  return Object.keys(match).length > 0 ? [{ $match: match }] : [];
+}
+
+/** Every season that has at least one recorded session, plus the current
+ * calendar year so the switcher always has somewhere sensible to land. */
+export async function getAvailableSeasons(): Promise<string[]> {
+  await connectToDatabase();
+  const seasons = await SessionModel.distinct("season");
+  const all = new Set<string>([...seasons, currentSeason()]);
+  return Array.from(all).sort((a, b) => Number(b) - Number(a));
 }
 
 export interface PlayerTotals {
   appearances: number;
   goals: number;
   assists: number;
+  wins: number;
+  draws: number;
+  losses: number;
   eligibleSessions: number;
   attendancePercentage: number;
   goalsPerAppearance: number;
@@ -29,11 +54,14 @@ export interface PlayerTotals {
 
 export async function getPlayerTotals(
   playerId: string,
-  scope: StatsScope = "overall"
+  scope: StatsScope = "overall",
+  season?: string
 ): Promise<PlayerTotals> {
   await connectToDatabase();
 
-  const sessionMatch = scope === "overall" ? {} : { type: scope };
+  const sessionMatch: Record<string, unknown> = {};
+  if (scope !== "overall") sessionMatch.type = scope;
+  if (season) sessionMatch.season = season;
   const eligibleSessions = await SessionModel.countDocuments(sessionMatch);
 
   const [agg] = await PlayerSessionPerformanceModel.aggregate([
@@ -47,13 +75,14 @@ export async function getPlayerTotals(
       },
     },
     { $unwind: "$session" },
-    ...sessionTypeMatchStage(scope),
+    ...sessionMatchStage(scope, season),
     {
       $group: {
         _id: null,
         appearances: { $sum: { $cond: ["$attended", 1, 0] } },
         goals: { $sum: "$goals" },
         assists: { $sum: "$assists" },
+        ...WIN_LOSS_DRAW_ACCUMULATORS,
       },
     },
   ]);
@@ -66,6 +95,9 @@ export async function getPlayerTotals(
     appearances,
     goals,
     assists,
+    wins: agg?.wins ?? 0,
+    draws: agg?.draws ?? 0,
+    losses: agg?.losses ?? 0,
     eligibleSessions,
     attendancePercentage:
       eligibleSessions > 0 ? Math.round((appearances / eligibleSessions) * 100) : 0,
@@ -131,7 +163,8 @@ export type LeaderboardMetric =
   | "goals"
   | "assists"
   | "appearances"
-  | "goalsPerAppearance";
+  | "goalsPerAppearance"
+  | "wins";
 
 export interface LeaderboardEntry {
   playerId: string;
@@ -145,7 +178,8 @@ export interface LeaderboardEntry {
 export async function getLeaderboard(
   metric: LeaderboardMetric,
   scope: StatsScope = "overall",
-  limit = 10
+  limit = 10,
+  season?: string
 ): Promise<LeaderboardEntry[]> {
   await connectToDatabase();
 
@@ -159,13 +193,14 @@ export async function getLeaderboard(
       },
     },
     { $unwind: "$session" },
-    ...sessionTypeMatchStage(scope),
+    ...sessionMatchStage(scope, season),
     {
       $group: {
         _id: "$playerId",
         goals: { $sum: "$goals" },
         assists: { $sum: "$assists" },
         appearances: { $sum: { $cond: ["$attended", 1, 0] } },
+        ...WIN_LOSS_DRAW_ACCUMULATORS,
       },
     },
     { $match: { appearances: { $gt: 0 } } },
@@ -207,10 +242,15 @@ export interface TeamSnapshot {
   totalGoals: number;
   totalAssists: number;
   totalAppearances: number;
+  wins: number;
+  draws: number;
+  losses: number;
 }
 
-export async function getTeamSnapshot(): Promise<TeamSnapshot> {
+export async function getTeamSnapshot(season?: string): Promise<TeamSnapshot> {
   await connectToDatabase();
+
+  const sessionMatch: Record<string, unknown> = season ? { season } : {};
 
   // Sequential, not Promise.all: firing several queries concurrently right
   // after a connection is established has been observed to intermittently
@@ -218,9 +258,18 @@ export async function getTeamSnapshot(): Promise<TeamSnapshot> {
   // far worse than the extra ~100ms this costs on a low-traffic site.
   const activePlayers = await PlayerModel.countDocuments({ status: "active" });
   const inactivePlayers = await PlayerModel.countDocuments({ status: "inactive" });
-  const trainingSessions = await SessionModel.countDocuments({ type: "training" });
-  const matches = await SessionModel.countDocuments({ type: "match" });
+  const trainingSessions = await SessionModel.countDocuments({ ...sessionMatch, type: "training" });
+  const matches = await SessionModel.countDocuments({ ...sessionMatch, type: "match" });
+  const wins = await SessionModel.countDocuments({ ...sessionMatch, outcome: "win" });
+  const draws = await SessionModel.countDocuments({ ...sessionMatch, outcome: "draw" });
+  const losses = await SessionModel.countDocuments({ ...sessionMatch, outcome: "loss" });
+
+  const sessionIds = season
+    ? (await SessionModel.find(sessionMatch).select("_id").lean()).map((s) => s._id)
+    : null;
+
   const totalsAgg = await PlayerSessionPerformanceModel.aggregate([
+    ...(sessionIds ? [{ $match: { sessionId: { $in: sessionIds } } }] : []),
     {
       $group: {
         _id: null,
@@ -241,6 +290,9 @@ export async function getTeamSnapshot(): Promise<TeamSnapshot> {
     totalGoals: totals.goals,
     totalAssists: totals.assists,
     totalAppearances: totals.appearances,
+    wins,
+    draws,
+    losses,
   };
 }
 
@@ -383,7 +435,7 @@ export interface RosterEntry {
   id: string;
   slug: string;
   firstName: string;
-  lastName: string;
+  lastName?: string;
   nickname?: string;
   name: string;
   photoUrl?: string;
@@ -423,7 +475,7 @@ export async function getPlayerRoster(): Promise<RosterEntry[]> {
       id: player._id.toString(),
       slug: player.slug,
       firstName: player.firstName,
-      lastName: player.lastName,
+      lastName: player.lastName ?? undefined,
       nickname: player.nickname ?? undefined,
       name: displayName(player),
       photoUrl: player.photoUrl ?? undefined,

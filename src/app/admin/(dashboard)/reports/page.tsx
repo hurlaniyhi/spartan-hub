@@ -1,4 +1,4 @@
-import { FileDown, CalendarDays } from "lucide-react";
+import { FileDown, FileText, CalendarDays } from "lucide-react";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -17,7 +17,7 @@ export default async function AdminReportsPage() {
       <div>
         <h1 className="font-display text-2xl font-bold text-gray-900">Reports</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Download Spartan FC statistics as a CSV — the totals reflect standings at that point in time.
+          Download Spartan FC statistics as a CSV or PDF — the totals reflect standings at that point in time.
         </p>
       </div>
 
@@ -27,9 +27,14 @@ export default async function AdminReportsPage() {
             <p className="font-display text-base font-bold text-gray-900">Current Statistics</p>
             <p className="text-sm text-gray-500">Every session recorded so far.</p>
           </div>
-          <Button href="/api/reports/export" native variant="accent" leftIcon={<FileDown className="size-4" />}>
-            Download CSV
-          </Button>
+          <div className="flex gap-2">
+            <Button href="/api/reports/export" native variant="outline" leftIcon={<FileDown className="size-4" />}>
+              CSV
+            </Button>
+            <Button href="/api/reports/export/pdf" native variant="accent" leftIcon={<FileText className="size-4" />}>
+              PDF
+            </Button>
+          </div>
         </CardBody>
       </Card>
 
@@ -48,7 +53,7 @@ export default async function AdminReportsPage() {
           <div className="flex flex-col gap-2">
             {sessions.map((session) => (
               <Card key={session.sessionId}>
-                <CardBody className="flex items-center justify-between gap-3 py-3">
+                <CardBody className="flex flex-wrap items-center justify-between gap-3 py-3">
                   <div className="flex items-center gap-2">
                     <Badge variant={session.type === "match" ? "accent" : "brand"}>{session.type}</Badge>
                     <span className="text-sm font-medium text-gray-700">
@@ -56,15 +61,26 @@ export default async function AdminReportsPage() {
                       {session.opponent ? ` vs ${session.opponent}` : ""}
                     </span>
                   </div>
-                  <Button
-                    href={`/api/reports/export?sessionId=${session.sessionId}`}
-                    native
-                    variant="outline"
-                    size="sm"
-                    leftIcon={<FileDown className="size-3.5" />}
-                  >
-                    CSV
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      href={`/api/reports/export?sessionId=${session.sessionId}`}
+                      native
+                      variant="outline"
+                      size="sm"
+                      leftIcon={<FileDown className="size-3.5" />}
+                    >
+                      CSV
+                    </Button>
+                    <Button
+                      href={`/api/reports/export/pdf?sessionId=${session.sessionId}`}
+                      native
+                      variant="accent"
+                      size="sm"
+                      leftIcon={<FileText className="size-3.5" />}
+                    >
+                      PDF
+                    </Button>
+                  </div>
                 </CardBody>
               </Card>
             ))}

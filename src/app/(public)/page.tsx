@@ -1,29 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Trophy, Target, CalendarDays, Users } from "lucide-react";
+import { ArrowRight, Trophy, CalendarDays, Users, SportShoe } from "lucide-react";
+import { SoccerBallIcon } from "@/components/icons/SoccerBallIcon";
 import { Button } from "@/components/ui/Button";
 import { StatTile } from "@/components/ui/StatTile";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { PlayerCard } from "@/components/players/PlayerCard";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
+import { SeasonSwitcher } from "@/components/statistics/SeasonSwitcher";
 import {
   getTeamSnapshot,
   getLeaderboard,
   getSessionSummaries,
   getPlayerRoster,
+  getAvailableSeasons,
 } from "@/lib/stats";
 import { formatSessionDate } from "@/lib/format";
+import { currentSeason, isValidSeasonSelection, resolveSeasonFilter } from "@/lib/slugify";
 
 // Team stats change every time the admin records a session, so this page
 // is always rendered fresh rather than statically cached at build time.
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ season?: string }>;
+}) {
+  const { season: requestedSeason } = await searchParams;
+  const seasons = await getAvailableSeasons();
+  const season = isValidSeasonSelection(requestedSeason, seasons) ? requestedSeason : currentSeason();
+  const seasonFilter = resolveSeasonFilter(season);
+
   // Sequential rather than Promise.all — see the comment in getTeamSnapshot.
-  const snapshot = await getTeamSnapshot();
-  const topScorers = await getLeaderboard("goals", "overall", 1);
-  const topAssisters = await getLeaderboard("assists", "overall", 1);
+  const snapshot = await getTeamSnapshot(seasonFilter);
+  const topScorers = await getLeaderboard("goals", "overall", 1, seasonFilter);
+  const topAssisters = await getLeaderboard("assists", "overall", 1, seasonFilter);
   const latestSessions = await getSessionSummaries(1);
   const roster = await getPlayerRoster();
 
@@ -70,8 +83,12 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg font-bold text-gray-900">Season Overview</h2>
+          <SeasonSwitcher seasons={seasons} current={season} variant="light" />
+        </div>
         <Card>
-          <CardBody className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+          <CardBody className="grid grid-cols-2 gap-6 border-b border-gray-100 sm:grid-cols-3 lg:grid-cols-5">
             <StatTile value={snapshot.activePlayers} label="Active Players" icon={<Users className="size-4" />} />
             <StatTile
               value={snapshot.trainingSessions}
@@ -82,15 +99,20 @@ export default async function HomePage() {
             <StatTile
               value={snapshot.totalGoals}
               label="Total Goals"
-              icon={<Target className="size-4" />}
+              icon={<SoccerBallIcon className="size-4" />}
               accent
             />
             <StatTile
               value={snapshot.totalAssists}
               label="Total Assists"
-              icon={<Target className="size-4" />}
+              icon={<SportShoe className="size-4" />}
               accent
             />
+          </CardBody>
+          <CardBody className="grid grid-cols-3 gap-6">
+            <StatTile value={snapshot.wins} label="Wins" tone="success" />
+            <StatTile value={snapshot.draws} label="Draws" tone="neutral" />
+            <StatTile value={snapshot.losses} label="Losses" tone="accent" />
           </CardBody>
         </Card>
       </section>
@@ -107,7 +129,7 @@ export default async function HomePage() {
                 statLabel="Goals"
               />
               <PerformerRow
-                icon={<Target className="size-5" />}
+                icon={<SportShoe className="size-5" />}
                 label="Top Assister"
                 player={topAssister}
                 statLabel="Assists"

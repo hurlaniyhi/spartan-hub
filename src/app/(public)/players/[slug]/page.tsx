@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CalendarDays, Target, Users as UsersIcon } from "lucide-react";
+import { CalendarDays, SportShoe } from "lucide-react";
+import { SoccerBallIcon } from "@/components/icons/SoccerBallIcon";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { StatTile } from "@/components/ui/StatTile";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
+import { SeasonSwitcher } from "@/components/statistics/SeasonSwitcher";
 import { connectToDatabase } from "@/lib/db";
 import { PlayerModel } from "@/models/Player";
-import { getPlayerTotals, getPlayerRecentActivity } from "@/lib/stats";
+import { getPlayerTotals, getPlayerRecentActivity, getAvailableSeasons } from "@/lib/stats";
 import { displayName, formatSessionDate, formatDecimal, formatPercent } from "@/lib/format";
+import { currentSeason, isValidSeasonSelection, resolveSeasonFilter } from "@/lib/slugify";
 
 export const dynamic = "force-dynamic";
 
@@ -35,15 +38,20 @@ export async function generateMetadata({
 
 export default async function PlayerProfilePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ season?: string }>;
 }) {
   const { slug } = await params;
+  const { season: requestedSeason } = await searchParams;
   const player = await getPlayer(slug);
   if (!player) notFound();
 
   const playerId = player._id.toString();
-  const totals = await getPlayerTotals(playerId);
+  const seasons = await getAvailableSeasons();
+  const season = isValidSeasonSelection(requestedSeason, seasons) ? requestedSeason : currentSeason();
+  const totals = await getPlayerTotals(playerId, "overall", resolveSeasonFilter(season));
   const recentActivity = await getPlayerRecentActivity(playerId, 5);
 
   return (
@@ -52,7 +60,7 @@ export default async function PlayerProfilePage({
         <div className="bg-brand-dark px-6 py-8 sm:px-8">
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
             <PlayerAvatar photoUrl={player.photoUrl} name={displayName(player)} size="xl" />
-            <div>
+            <div className="flex-1">
               <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <h1 className="font-display text-3xl font-bold text-white">{displayName(player)}</h1>
                 {player.jerseyNumber !== undefined && player.jerseyNumber !== null && (
@@ -69,6 +77,9 @@ export default async function PlayerProfilePage({
                 {player.status}
               </Badge>
             </div>
+            <div className="sm:self-start">
+              <SeasonSwitcher seasons={seasons} current={season} />
+            </div>
           </div>
         </div>
 
@@ -76,6 +87,12 @@ export default async function PlayerProfilePage({
           <StatTile value={totals.appearances} label="Appearances" className="items-center" />
           <StatTile value={totals.goals} label="Goals" accent className="items-center" />
           <StatTile value={totals.assists} label="Assists" accent className="items-center" />
+        </CardBody>
+
+        <CardBody className="grid grid-cols-3 gap-4 border-b border-gray-100 text-center">
+          <StatTile value={totals.wins} label="Wins" tone="success" className="items-center" />
+          <StatTile value={totals.draws} label="Draws" tone="neutral" className="items-center" />
+          <StatTile value={totals.losses} label="Losses" tone="accent" className="items-center" />
         </CardBody>
 
         <CardBody className="grid grid-cols-3 gap-4 border-b border-gray-100 text-center text-sm">
@@ -132,10 +149,10 @@ export default async function PlayerProfilePage({
                     {entry.attended && (
                       <>
                         <span className="flex items-center gap-1 text-gray-600">
-                          <Target className="size-3.5" /> {entry.goals}
+                          <SoccerBallIcon className="size-3.5" /> {entry.goals}
                         </span>
                         <span className="flex items-center gap-1 text-gray-600">
-                          <UsersIcon className="size-3.5" /> {entry.assists}
+                          <SportShoe className="size-3.5" /> {entry.assists}
                         </span>
                       </>
                     )}

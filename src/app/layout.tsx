@@ -24,9 +24,6 @@ export const metadata: Metadata = {
   },
   description:
     "The home of Spartan FC: squad, player profiles, stats, leaderboards and match/training history.",
-  icons: {
-    icon: "/images/spartan-logo.jpeg",
-  },
   openGraph: {
     title: "Spartan FC",
     description:

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LogOut, ExternalLink } from "lucide-react";
+import { LogOut, Eye } from "lucide-react";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { logoutAction } from "@/actions/auth";
 
@@ -25,8 +25,8 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
               prefetch={false}
               className="hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 sm:flex"
             >
-              <ExternalLink className="size-4" />
-              View Site
+              <Eye className="size-4" />
+              Player View
             </Link>
             <form action={logoutAction}>
               <button

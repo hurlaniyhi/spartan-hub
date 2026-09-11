@@ -7,6 +7,7 @@ import { PlayerModel } from "@/models/Player";
 import { PlayerSessionPerformanceModel } from "@/models/PlayerSessionPerformance";
 import { getActivePlayers } from "@/lib/stats";
 import { displayName } from "@/lib/format";
+import type { MatchOutcome } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +66,7 @@ export default async function EditSessionPage({
           opponent: session.opponent,
           venue: session.venue,
           result: session.result,
+          outcome: session.outcome as MatchOutcome | undefined,
           notes: session.notes,
           performances,
         }}

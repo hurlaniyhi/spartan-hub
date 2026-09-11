@@ -49,13 +49,21 @@ export async function saveSession(
   await connectToDatabase();
 
   const { session: sessionFields, performances } = parsed.data;
+  const { outcome, ...restSessionFields } = sessionFields;
 
-  const sessionDoc = sessionId
-    ? await SessionModel.findByIdAndUpdate(sessionId, sessionFields, {
-        returnDocument: "after",
-        runValidators: true,
-      })
-    : await SessionModel.create(sessionFields);
+  let sessionDoc;
+  if (sessionId) {
+    // Mongoose ignores `undefined` values in an update, so if the admin
+    // clears a previously-recorded outcome it must be $unset explicitly —
+    // otherwise the old win/draw/loss would silently stick around.
+    sessionDoc = await SessionModel.findByIdAndUpdate(
+      sessionId,
+      outcome ? { $set: { ...restSessionFields, outcome } } : { $set: restSessionFields, $unset: { outcome: "" } },
+      { returnDocument: "after", runValidators: true }
+    );
+  } else {
+    sessionDoc = await SessionModel.create(sessionFields);
+  }
 
   if (!sessionDoc) {
     return { success: false, message: "That session couldn't be found." };

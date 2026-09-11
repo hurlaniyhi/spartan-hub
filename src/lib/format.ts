@@ -1,14 +1,14 @@
 import { format } from "date-fns";
 
-type NamedPlayer = { firstName: string; lastName: string; nickname?: string | null };
+type NamedPlayer = { firstName: string; lastName?: string | null; nickname?: string | null };
 
 /** The name shown everywhere in the UI: nickname if set, otherwise first + last. */
 export function displayName(player: NamedPlayer): string {
-  return player.nickname?.trim() || `${player.firstName} ${player.lastName}`;
+  return player.nickname?.trim() || fullName(player);
 }
 
 export function fullName(player: NamedPlayer): string {
-  return `${player.firstName} ${player.lastName}`;
+  return [player.firstName, player.lastName].filter(Boolean).join(" ").trim();
 }
 
 export function formatSessionDate(date: Date | string): string {
