@@ -173,11 +173,17 @@ export function StatisticsReportDocument({
   rows,
   cutoffDate,
   seasonLabel,
+  trainingSessions,
+  matches,
+  totalSessions,
   logo,
 }: {
   rows: ReportRow[];
   cutoffDate: Date;
   seasonLabel: string;
+  trainingSessions: number;
+  matches: number;
+  totalSessions: number;
   logo: Buffer;
 }) {
   const totals = rows.reduce(
@@ -230,6 +236,21 @@ export function StatisticsReportDocument({
             <View style={styles.summaryCard}>
               <Text style={[styles.summaryValue, { color: ACCENT }]}>{totals.assists}</Text>
               <Text style={styles.summaryLabel}>Total Assists</Text>
+            </View>
+          </View>
+
+          <View style={styles.summaryRow}>
+            <View style={styles.summaryCard}>
+              <Text style={styles.summaryValue}>{trainingSessions}</Text>
+              <Text style={styles.summaryLabel}>Trainings</Text>
+            </View>
+            <View style={styles.summaryCard}>
+              <Text style={styles.summaryValue}>{matches}</Text>
+              <Text style={styles.summaryLabel}>Matches</Text>
+            </View>
+            <View style={styles.summaryCard}>
+              <Text style={styles.summaryValue}>{totalSessions}</Text>
+              <Text style={styles.summaryLabel}>Total Sessions</Text>
             </View>
           </View>
 

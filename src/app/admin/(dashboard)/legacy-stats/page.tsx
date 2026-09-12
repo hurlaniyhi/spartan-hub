@@ -1,7 +1,8 @@
 import { LegacySeasonPicker } from "@/components/admin/LegacySeasonPicker";
 import { LegacyStatsTable, type LegacyRow } from "@/components/admin/LegacyStatsTable";
+import { LegacyTeamSummaryForm } from "@/components/admin/LegacyTeamSummaryForm";
 import { Card, CardBody } from "@/components/ui/Card";
-import { getPlayerRoster, getLegacyTotalsForSeason } from "@/lib/stats";
+import { getPlayerRoster, getLegacyTotalsForSeason, getLegacyTeamSummary } from "@/lib/stats";
 import { currentSeason } from "@/lib/slugify";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export default async function AdminLegacyStatsPage({
 
   const roster = await getPlayerRoster();
   const legacyTotals = await getLegacyTotalsForSeason(season);
+  const teamSummary = await getLegacyTeamSummary(season);
   const legacyByPlayer = new Map(legacyTotals.map((t) => [t.playerId, t]));
 
   const rows: LegacyRow[] = roster.map((player) => {
@@ -51,6 +53,17 @@ export default async function AdminLegacyStatsPage({
           in Spartan Hub for {season} — otherwise those sessions will be double-counted.
         </span>
       </div>
+
+      <Card>
+        <CardBody>
+          <p className="mb-1 font-display text-base font-bold text-gray-900">Team Totals</p>
+          <p className="mb-4 text-sm text-gray-500">
+            How many trainings and matches the team held in {season}, and the resulting record —
+            these feed the training/match counts and win/draw/loss tiles across the app.
+          </p>
+          <LegacyTeamSummaryForm key={season} season={season} summary={teamSummary} />
+        </CardBody>
+      </Card>
 
       <Card>
         <CardBody>

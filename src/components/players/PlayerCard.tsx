@@ -4,12 +4,12 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
 import { POSITION_GROUP_STYLES } from "@/lib/position-colors";
-import { formatJerseyNumber } from "@/lib/format";
+import { getJerseyLabel } from "@/lib/format";
 import type { RosterEntry } from "@/lib/stats";
-import type { PositionGroup } from "@/lib/constants";
+import type { AnyPositionGroup } from "@/lib/constants";
 
 export function PlayerCard({ player }: { player: RosterEntry }) {
-  const style = POSITION_GROUP_STYLES[player.positionGroup as PositionGroup];
+  const style = POSITION_GROUP_STYLES[player.positionGroup as AnyPositionGroup];
 
   return (
     <Link href={`/players/${player.slug}`} className="group block">
@@ -19,7 +19,7 @@ export function PlayerCard({ player }: { player: RosterEntry }) {
           <div className="flex items-start justify-between">
             <PlayerAvatar photoUrl={player.photoUrl} name={player.name} size="lg" />
             <span className="font-display text-3xl font-bold text-gray-300 transition-colors group-hover:text-brand-light">
-              #{formatJerseyNumber(player.jerseyNumber)}
+              #{getJerseyLabel(player)}
             </span>
           </div>
 

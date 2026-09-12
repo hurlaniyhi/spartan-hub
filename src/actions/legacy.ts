@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { connectToDatabase } from "@/lib/db";
 import { SessionModel } from "@/models/Session";
 import { PlayerSessionPerformanceModel } from "@/models/PlayerSessionPerformance";
+import { LegacySeasonSummaryModel } from "@/models/LegacySeasonSummary";
 import type { ActionResult } from "@/lib/action-result";
 import { currentSeason } from "@/lib/slugify";
 
@@ -113,6 +114,46 @@ export async function saveLegacyRecord(
 
   revalidateLegacy();
   return { success: true, data: { appearances: effectiveAppearances } };
+}
+
+export interface LegacyTeamSummaryInput {
+  season: string;
+  trainingSessions: number;
+  matches: number;
+  wins: number;
+  draws: number;
+  losses: number;
+}
+
+export async function saveLegacyTeamSummary(input: LegacyTeamSummaryInput): Promise<ActionResult> {
+  const authSession = await auth();
+  if (!authSession?.user) {
+    return { success: false, message: "You must be signed in as an admin to do that." };
+  }
+
+  if (!/^\d{4}$/.test(input.season) || Number(input.season) > Number(currentSeason())) {
+    return { success: false, message: "That season isn't valid." };
+  }
+
+  const clamp = (value: number) => Math.max(0, Math.floor(value || 0));
+
+  await connectToDatabase();
+  await LegacySeasonSummaryModel.findOneAndUpdate(
+    { season: input.season },
+    {
+      $set: {
+        trainingSessions: clamp(input.trainingSessions),
+        matches: clamp(input.matches),
+        wins: clamp(input.wins),
+        draws: clamp(input.draws),
+        losses: clamp(input.losses),
+      },
+    },
+    { upsert: true }
+  );
+
+  revalidateLegacy();
+  return { success: true, data: undefined };
 }
 
 function revalidateLegacy() {

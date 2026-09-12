@@ -31,3 +31,30 @@ export function formatPercent(value: number): string {
 export function formatJerseyNumber(jerseyNumber?: number | null): string {
   return jerseyNumber !== undefined && jerseyNumber !== null ? String(jerseyNumber) : "00";
 }
+
+/** A coach's bio can carry a non-numeric squad number (e.g. "Unique number: 8+1")
+ * for whenever the plain numeric jerseyNumber field doesn't fit. */
+export function extractUniqueNumberFromBio(bio?: string | null): string | undefined {
+  if (!bio) return undefined;
+  return bio.match(/unique\s*number\s*:?\s*(\S+)/i)?.[1];
+}
+
+/**
+ * The jersey label to display for a player: their explicit number if set,
+ * otherwise — for a coach only — whatever "unique number" their bio
+ * specifies, otherwise the "00" placeholder.
+ */
+export function getJerseyLabel(player: {
+  jerseyNumber?: number | null;
+  position?: string;
+  bio?: string | null;
+}): string {
+  if (player.jerseyNumber !== undefined && player.jerseyNumber !== null) {
+    return String(player.jerseyNumber);
+  }
+  if (player.position === "Coach") {
+    const unique = extractUniqueNumberFromBio(player.bio);
+    if (unique) return unique;
+  }
+  return "00";
+}

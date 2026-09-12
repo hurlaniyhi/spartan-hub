@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/db";
 import { PlayerModel } from "@/models/Player";
 import { SessionModel } from "@/models/Session";
 import { PlayerSessionPerformanceModel } from "@/models/PlayerSessionPerformance";
+import { LegacySeasonSummaryModel } from "@/models/LegacySeasonSummary";
 import { displayName } from "@/lib/format";
 import { currentSeason } from "@/lib/slugify";
 import type { SessionType, PlayerStatus } from "@/lib/constants";
@@ -34,8 +35,14 @@ function sessionMatchStage(scope: StatsScope, season?: string) {
  * calendar year so the switcher always has somewhere sensible to land. */
 export async function getAvailableSeasons(): Promise<string[]> {
   await connectToDatabase();
-  const seasons = await SessionModel.distinct("season");
-  const all = new Set<string>([...seasons, currentSeason()]);
+  const [sessionSeasons, legacySummarySeasons] = [
+    await SessionModel.distinct("season"),
+    await LegacySeasonSummaryModel.distinct("season"),
+  ];
+  // A season with only manually-entered team totals (no sessions recorded
+  // at all yet) must still show up everywhere seasons are selectable —
+  // otherwise its data is invisible outside the Legacy Stats screen itself.
+  const all = new Set<string>([...sessionSeasons, ...legacySummarySeasons, currentSeason()]);
   return Array.from(all).sort((a, b) => Number(b) - Number(a));
 }
 
@@ -247,6 +254,52 @@ export interface TeamSnapshot {
   losses: number;
 }
 
+export interface LegacyTeamTotals {
+  trainingSessions: number;
+  matches: number;
+  wins: number;
+  draws: number;
+  losses: number;
+}
+
+const ZERO_LEGACY_TEAM_TOTALS: LegacyTeamTotals = {
+  trainingSessions: 0,
+  matches: 0,
+  wins: 0,
+  draws: 0,
+  losses: 0,
+};
+
+/** A season's manually-entered pre-launch team totals, for pre-filling the admin Legacy Stats screen. */
+export async function getLegacyTeamSummary(season: string): Promise<LegacyTeamTotals> {
+  await connectToDatabase();
+  const doc = await LegacySeasonSummaryModel.findOne({ season }).lean();
+  if (!doc) return { ...ZERO_LEGACY_TEAM_TOTALS };
+  return {
+    trainingSessions: doc.trainingSessions,
+    matches: doc.matches,
+    wins: doc.wins,
+    draws: doc.draws,
+    losses: doc.losses,
+  };
+}
+
+/** Summed across every season — used when "All Seasons" is selected. */
+async function getAllLegacyTeamTotals(): Promise<LegacyTeamTotals> {
+  await connectToDatabase();
+  const docs = await LegacySeasonSummaryModel.find().lean();
+  return docs.reduce(
+    (acc, doc) => ({
+      trainingSessions: acc.trainingSessions + doc.trainingSessions,
+      matches: acc.matches + doc.matches,
+      wins: acc.wins + doc.wins,
+      draws: acc.draws + doc.draws,
+      losses: acc.losses + doc.losses,
+    }),
+    { ...ZERO_LEGACY_TEAM_TOTALS }
+  );
+}
+
 export async function getTeamSnapshot(season?: string): Promise<TeamSnapshot> {
   await connectToDatabase();
 
@@ -258,7 +311,8 @@ export async function getTeamSnapshot(season?: string): Promise<TeamSnapshot> {
   // far worse than the extra ~100ms this costs on a low-traffic site.
   // Legacy placeholder sessions (see actions/legacy.ts) feed goals/assists/
   // appearances below same as any real session, but they aren't real
-  // training/match events, so they're excluded from these event counts.
+  // training/match events, so they're excluded from these event counts —
+  // the manually-entered LegacySeasonSummary totals are added back in below.
   const realSessionMatch = { ...sessionMatch, isLegacy: { $ne: true } };
 
   const activePlayers = await PlayerModel.countDocuments({ status: "active" });
@@ -268,6 +322,7 @@ export async function getTeamSnapshot(season?: string): Promise<TeamSnapshot> {
   const wins = await SessionModel.countDocuments({ ...realSessionMatch, outcome: "win" });
   const draws = await SessionModel.countDocuments({ ...realSessionMatch, outcome: "draw" });
   const losses = await SessionModel.countDocuments({ ...realSessionMatch, outcome: "loss" });
+  const legacyTeamTotals = season ? await getLegacyTeamSummary(season) : await getAllLegacyTeamTotals();
 
   const sessionIds = season
     ? (await SessionModel.find(sessionMatch).select("_id").lean()).map((s) => s._id)
@@ -290,14 +345,14 @@ export async function getTeamSnapshot(season?: string): Promise<TeamSnapshot> {
   return {
     activePlayers,
     inactivePlayers,
-    trainingSessions,
-    matches,
+    trainingSessions: trainingSessions + legacyTeamTotals.trainingSessions,
+    matches: matches + legacyTeamTotals.matches,
     totalGoals: totals.goals,
     totalAssists: totals.assists,
     totalAppearances: totals.appearances,
-    wins,
-    draws,
-    losses,
+    wins: wins + legacyTeamTotals.wins,
+    draws: draws + legacyTeamTotals.draws,
+    losses: losses + legacyTeamTotals.losses,
   };
 }
 
@@ -451,6 +506,7 @@ export interface RosterEntry {
   position: string;
   positionGroup: string;
   status: PlayerStatus;
+  bio?: string;
   appearances: number;
   goals: number;
   assists: number;
@@ -491,6 +547,7 @@ export async function getPlayerRoster(): Promise<RosterEntry[]> {
       position: player.position,
       positionGroup: player.positionGroup,
       status: player.status as PlayerStatus,
+      bio: player.bio ?? undefined,
       appearances: playerTotals?.appearances ?? 0,
       goals: playerTotals?.goals ?? 0,
       assists: playerTotals?.assists ?? 0,

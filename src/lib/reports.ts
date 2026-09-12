@@ -2,6 +2,7 @@ import { connectToDatabase } from "@/lib/db";
 import { PlayerModel } from "@/models/Player";
 import { SessionModel } from "@/models/Session";
 import { PlayerSessionPerformanceModel } from "@/models/PlayerSessionPerformance";
+import { LegacySeasonSummaryModel } from "@/models/LegacySeasonSummary";
 import { displayName } from "@/lib/format";
 import { ALL_SEASONS } from "@/lib/slugify";
 
@@ -20,7 +21,39 @@ export interface ReportData {
   cutoffDate: Date;
   /** "2026" for a specific season, or "All Seasons" when no season filter applies. */
   seasonLabel: string;
+  trainingSessions: number;
+  matches: number;
+  totalSessions: number;
   rows: ReportRow[];
+}
+
+/**
+ * A season's manually-entered legacy training/match counts have no specific
+ * date attached (they're a lump sum for the whole season), so they're only
+ * counted once the cutoff has reached that season at all — approximated as
+ * "the season's year is on or before the cutoff's year", the same
+ * granularity the data itself has.
+ */
+async function getLegacyTeamTotalsForReport(
+  season: string | undefined,
+  cutoffDate: Date
+): Promise<{ trainingSessions: number; matches: number }> {
+  if (season) {
+    const doc = await LegacySeasonSummaryModel.findOne({ season }).lean();
+    return { trainingSessions: doc?.trainingSessions ?? 0, matches: doc?.matches ?? 0 };
+  }
+
+  const cutoffYear = cutoffDate.getFullYear();
+  const docs = await LegacySeasonSummaryModel.find().lean();
+  return docs
+    .filter((doc) => Number(doc.season) <= cutoffYear)
+    .reduce(
+      (acc, doc) => ({
+        trainingSessions: acc.trainingSessions + doc.trainingSessions,
+        matches: acc.matches + doc.matches,
+      }),
+      { trainingSessions: 0, matches: 0 }
+    );
 }
 
 /**
@@ -59,6 +92,15 @@ export async function getStatisticsAsOf(params: {
 
   const sessionsUpToCutoff = await SessionModel.find(sessionMatch).select("_id").lean();
   const sessionIds = sessionsUpToCutoff.map((s) => s._id);
+
+  // Real (non-legacy) events in range, plus the season's manually-entered
+  // legacy counts — same convention as getTeamSnapshot in lib/stats.ts.
+  const realSessionMatch = { ...sessionMatch, isLegacy: { $ne: true } };
+  const realTrainingSessions = await SessionModel.countDocuments({ ...realSessionMatch, type: "training" });
+  const realMatches = await SessionModel.countDocuments({ ...realSessionMatch, type: "match" });
+  const legacyTeamTotals = await getLegacyTeamTotalsForReport(season, cutoffDate);
+  const trainingSessions = realTrainingSessions + legacyTeamTotals.trainingSessions;
+  const matches = realMatches + legacyTeamTotals.matches;
 
   const totals = await PlayerSessionPerformanceModel.aggregate([
     { $match: { sessionId: { $in: sessionIds } } },
@@ -113,5 +155,12 @@ export async function getStatisticsAsOf(params: {
         a.name.localeCompare(b.name)
     );
 
-  return { cutoffDate, seasonLabel: season ? `${season} Season` : "All Seasons", rows };
+  return {
+    cutoffDate,
+    seasonLabel: season ? `${season} Season` : "All Seasons",
+    trainingSessions,
+    matches,
+    totalSessions: trainingSessions + matches,
+    rows,
+  };
 }
