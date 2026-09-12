@@ -256,13 +256,18 @@ export async function getTeamSnapshot(season?: string): Promise<TeamSnapshot> {
   // after a connection is established has been observed to intermittently
   // return empty results (a MongoDB driver/connection-pool race), which is
   // far worse than the extra ~100ms this costs on a low-traffic site.
+  // Legacy placeholder sessions (see actions/legacy.ts) feed goals/assists/
+  // appearances below same as any real session, but they aren't real
+  // training/match events, so they're excluded from these event counts.
+  const realSessionMatch = { ...sessionMatch, isLegacy: { $ne: true } };
+
   const activePlayers = await PlayerModel.countDocuments({ status: "active" });
   const inactivePlayers = await PlayerModel.countDocuments({ status: "inactive" });
-  const trainingSessions = await SessionModel.countDocuments({ ...sessionMatch, type: "training" });
-  const matches = await SessionModel.countDocuments({ ...sessionMatch, type: "match" });
-  const wins = await SessionModel.countDocuments({ ...sessionMatch, outcome: "win" });
-  const draws = await SessionModel.countDocuments({ ...sessionMatch, outcome: "draw" });
-  const losses = await SessionModel.countDocuments({ ...sessionMatch, outcome: "loss" });
+  const trainingSessions = await SessionModel.countDocuments({ ...realSessionMatch, type: "training" });
+  const matches = await SessionModel.countDocuments({ ...realSessionMatch, type: "match" });
+  const wins = await SessionModel.countDocuments({ ...realSessionMatch, outcome: "win" });
+  const draws = await SessionModel.countDocuments({ ...realSessionMatch, outcome: "draw" });
+  const losses = await SessionModel.countDocuments({ ...realSessionMatch, outcome: "loss" });
 
   const sessionIds = season
     ? (await SessionModel.find(sessionMatch).select("_id").lean()).map((s) => s._id)
@@ -310,7 +315,10 @@ export interface SessionSummary {
 export async function getSessionSummaries(limit?: number, season?: string): Promise<SessionSummary[]> {
   await connectToDatabase();
 
-  const sessions = await SessionModel.find(season ? { season } : {})
+  const match: Record<string, unknown> = { isLegacy: { $ne: true } };
+  if (season) match.season = season;
+
+  const sessions = await SessionModel.find(match)
     .sort({ date: -1 })
     .limit(limit ?? 0)
     .lean();
@@ -488,4 +496,40 @@ export async function getPlayerRoster(): Promise<RosterEntry[]> {
       assists: playerTotals?.assists ?? 0,
     };
   });
+}
+
+export interface LegacyTotals {
+  playerId: string;
+  appearances: number;
+  goals: number;
+  assists: number;
+}
+
+/** Each player's currently-recorded legacy (pre-launch) totals for a season, for the Legacy Stats admin screen to pre-fill. */
+export async function getLegacyTotalsForSeason(season: string): Promise<LegacyTotals[]> {
+  await connectToDatabase();
+
+  const legacySessionIds = (await SessionModel.find({ season, isLegacy: true }).select("_id").lean()).map(
+    (s) => s._id
+  );
+  if (legacySessionIds.length === 0) return [];
+
+  const rows = await PlayerSessionPerformanceModel.aggregate([
+    { $match: { sessionId: { $in: legacySessionIds }, attended: true } },
+    {
+      $group: {
+        _id: "$playerId",
+        appearances: { $sum: 1 },
+        goals: { $sum: "$goals" },
+        assists: { $sum: "$assists" },
+      },
+    },
+  ]);
+
+  return rows.map((row) => ({
+    playerId: row._id.toString(),
+    appearances: row.appearances,
+    goals: row.goals,
+    assists: row.assists,
+  }));
 }

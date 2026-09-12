@@ -9,6 +9,7 @@ import {
   CalendarDays,
   Trophy,
   SportShoe,
+  History,
 } from "lucide-react";
 import { SoccerBallIcon } from "@/components/icons/SoccerBallIcon";
 import { Card, CardBody } from "@/components/ui/Card";
@@ -68,7 +69,7 @@ export default async function AdminDashboardPage({
 
       <div>
         <h2 className="mb-3 font-display text-base font-bold text-gray-900">Quick Actions</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <Button href="/admin/players/new" variant="accent" leftIcon={<UserPlus className="size-4" />}>
             Add Player
           </Button>
@@ -91,6 +92,9 @@ export default async function AdminDashboardPage({
           </Button>
           <Button href="/admin/reports" variant="outline" leftIcon={<FileDown className="size-4" />}>
             Export Report
+          </Button>
+          <Button href="/admin/legacy-stats" variant="outline" leftIcon={<History className="size-4" />}>
+            Legacy Stats
           </Button>
         </div>
       </div>

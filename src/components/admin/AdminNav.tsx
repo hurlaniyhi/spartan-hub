@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, CalendarDays, FileDown } from "lucide-react";
+import { LayoutDashboard, Users, CalendarDays, FileDown, History } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 const ADMIN_NAV_ITEMS = [
@@ -10,6 +10,7 @@ const ADMIN_NAV_ITEMS = [
   { href: "/admin/players", label: "Players", icon: Users },
   { href: "/admin/sessions", label: "Sessions", icon: CalendarDays },
   { href: "/admin/reports", label: "Reports", icon: FileDown },
+  { href: "/admin/legacy-stats", label: "Legacy Stats", icon: History },
 ] as const;
 
 export function AdminNav() {

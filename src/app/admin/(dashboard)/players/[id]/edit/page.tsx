@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { PlayerForm } from "@/components/admin/PlayerForm";
+import { BackButton } from "@/components/ui/BackButton";
 import { connectToDatabase } from "@/lib/db";
 import { PlayerModel } from "@/models/Player";
 import { displayName } from "@/lib/format";
@@ -21,6 +22,7 @@ export default async function EditPlayerPage({
 
   return (
     <div className="max-w-2xl">
+      <BackButton fallbackHref="/admin/players" label="Back to Players" className="mb-4" />
       <h1 className="font-display text-2xl font-bold text-gray-900">Edit Player</h1>
       <p className="mt-1 mb-6 text-sm text-gray-500">Update {displayName(player)}&apos;s details.</p>
       <PlayerForm

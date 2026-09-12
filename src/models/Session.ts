@@ -16,6 +16,11 @@ const sessionSchema = new Schema(
     outcome: { type: String, enum: MATCH_OUTCOMES },
     notes: { type: String, trim: true, maxlength: 2000 },
     season: { type: String, required: true, index: true },
+    // A placeholder session used only to carry pre-launch (before Spartan
+    // Hub existed) totals into a player's record — see actions/legacy.ts.
+    // Never shown in session lists/history and excluded from the
+    // training/match counts on the team snapshot.
+    isLegacy: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
