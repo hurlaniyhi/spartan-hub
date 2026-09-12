@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
 import { POSITION_GROUP_STYLES } from "@/lib/position-colors";
+import { formatJerseyNumber } from "@/lib/format";
 import type { RosterEntry } from "@/lib/stats";
 import type { PositionGroup } from "@/lib/constants";
 
@@ -17,11 +18,9 @@ export function PlayerCard({ player }: { player: RosterEntry }) {
         <div className="p-5">
           <div className="flex items-start justify-between">
             <PlayerAvatar photoUrl={player.photoUrl} name={player.name} size="lg" />
-            {player.jerseyNumber !== undefined && (
-              <span className="font-display text-3xl font-bold text-gray-300 transition-colors group-hover:text-brand-light">
-                #{player.jerseyNumber}
-              </span>
-            )}
+            <span className="font-display text-3xl font-bold text-gray-300 transition-colors group-hover:text-brand-light">
+              #{formatJerseyNumber(player.jerseyNumber)}
+            </span>
           </div>
 
           <div className="mt-4">

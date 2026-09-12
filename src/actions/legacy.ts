@@ -6,6 +6,7 @@ import { connectToDatabase } from "@/lib/db";
 import { SessionModel } from "@/models/Session";
 import { PlayerSessionPerformanceModel } from "@/models/PlayerSessionPerformance";
 import type { ActionResult } from "@/lib/action-result";
+import { currentSeason } from "@/lib/slugify";
 
 const LEGACY_NOTE = "Legacy record — carried over from before Spartan Hub launch.";
 // A generous ceiling against fat-fingered input (e.g. an extra zero) rather
@@ -59,7 +60,7 @@ export async function saveLegacyRecord(
     return { success: false, message: "You must be signed in as an admin to do that." };
   }
 
-  if (!/^\d{4}$/.test(input.season)) {
+  if (!/^\d{4}$/.test(input.season) || Number(input.season) > Number(currentSeason())) {
     return { success: false, message: "That season isn't valid." };
   }
 

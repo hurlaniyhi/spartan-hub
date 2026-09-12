@@ -12,7 +12,8 @@ export default async function AdminLegacyStatsPage({
   searchParams: Promise<{ season?: string }>;
 }) {
   const { season: requestedSeason } = await searchParams;
-  const season = requestedSeason && /^\d{4}$/.test(requestedSeason) ? requestedSeason : currentSeason();
+  const isValidYear = (value: string) => /^\d{4}$/.test(value) && Number(value) <= Number(currentSeason());
+  const season = requestedSeason && isValidYear(requestedSeason) ? requestedSeason : currentSeason();
 
   const roster = await getPlayerRoster();
   const legacyTotals = await getLegacyTotalsForSeason(season);

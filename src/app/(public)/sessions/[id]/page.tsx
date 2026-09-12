@@ -7,6 +7,7 @@ import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { StatTile } from "@/components/ui/StatTile";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
+import { BackButton } from "@/components/ui/BackButton";
 import { getSessionDetail } from "@/lib/stats";
 import { formatSessionDate } from "@/lib/format";
 
@@ -41,6 +42,7 @@ export default async function SessionDetailPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+      <BackButton fallbackHref="/sessions" label="Back to Sessions" className="mb-4" />
       <Card className="overflow-hidden">
         <div className="relative overflow-hidden bg-brand-dark px-6 py-7 sm:px-8">
           <div

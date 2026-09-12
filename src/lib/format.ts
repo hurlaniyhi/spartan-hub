@@ -26,3 +26,8 @@ export function formatDecimal(value: number, digits = 2): string {
 export function formatPercent(value: number): string {
   return `${Math.round(value)}%`;
 }
+
+/** "00" is the traditional placeholder for a player with no jersey number assigned yet. */
+export function formatJerseyNumber(jerseyNumber?: number | null): string {
+  return jerseyNumber !== undefined && jerseyNumber !== null ? String(jerseyNumber) : "00";
+}

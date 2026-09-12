@@ -8,10 +8,11 @@ import { StatTile } from "@/components/ui/StatTile";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
 import { SeasonSwitcher } from "@/components/statistics/SeasonSwitcher";
+import { BackButton } from "@/components/ui/BackButton";
 import { connectToDatabase } from "@/lib/db";
 import { PlayerModel } from "@/models/Player";
 import { getPlayerTotals, getPlayerRecentActivity, getAvailableSeasons } from "@/lib/stats";
-import { displayName, formatSessionDate, formatDecimal, formatPercent } from "@/lib/format";
+import { displayName, formatSessionDate, formatDecimal, formatPercent, formatJerseyNumber } from "@/lib/format";
 import { currentSeason, isValidSeasonSelection, resolveSeasonFilter } from "@/lib/slugify";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,7 @@ export default async function PlayerProfilePage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+      <BackButton fallbackHref="/squad" label="Back to Squad" className="mb-4" />
       <Card className="overflow-hidden">
         <div className="bg-brand-dark px-6 py-8 sm:px-8">
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
@@ -63,11 +65,9 @@ export default async function PlayerProfilePage({
             <div className="flex-1">
               <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <h1 className="font-display text-3xl font-bold text-white">{displayName(player)}</h1>
-                {player.jerseyNumber !== undefined && player.jerseyNumber !== null && (
-                  <span className="font-display text-2xl font-bold text-white/40">
-                    #{player.jerseyNumber}
-                  </span>
-                )}
+                <span className="font-display text-2xl font-bold text-white/40">
+                  #{formatJerseyNumber(player.jerseyNumber)}
+                </span>
               </div>
               <p className="mt-1 text-sm font-medium text-white/70">{player.position}</p>
               <Badge

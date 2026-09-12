@@ -3,22 +3,27 @@
 import { useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { CalendarRange } from "lucide-react";
+import { currentSeason } from "@/lib/slugify";
 
 /**
  * Unlike SeasonSwitcher, this isn't limited to seasons that already have a
  * session — the whole point here is entering totals for a season that may
- * not exist in the app yet.
+ * not exist in the app yet. It's still capped at the current year, though —
+ * there's nothing to import for a season that hasn't happened yet.
  */
 export function LegacySeasonPicker({ season }: { season: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const maxYear = currentSeason();
   const [value, setValue] = useState(season);
 
-  const go = (next: string) => {
-    if (!/^\d{4}$/.test(next)) return;
+  const go = (typed: string) => {
+    if (!/^\d{4}$/.test(typed)) return;
+    const clamped = Number(typed) > Number(maxYear) ? maxYear : typed;
+    setValue(clamped);
     const params = new URLSearchParams(searchParams.toString());
-    params.set("season", next);
+    params.set("season", clamped);
     router.push(`${pathname}?${params.toString()}`);
   };
 
@@ -28,6 +33,7 @@ export function LegacySeasonPicker({ season }: { season: string }) {
       <input
         type="number"
         inputMode="numeric"
+        max={maxYear}
         value={value}
         onChange={(event) => setValue(event.target.value)}
         onBlur={() => go(value)}
