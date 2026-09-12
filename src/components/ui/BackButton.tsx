@@ -14,10 +14,13 @@ import { cn } from "@/lib/cn";
 export function BackButton({
   fallbackHref,
   label = "Back",
+  variant = "default",
   className,
 }: {
   fallbackHref: string;
   label?: string;
+  /** "default" for light backgrounds, "inverse" for dark/photo backgrounds. */
+  variant?: "default" | "inverse";
   className?: string;
 }) {
   const router = useRouter();
@@ -35,7 +38,8 @@ export function BackButton({
       type="button"
       onClick={handleClick}
       className={cn(
-        "inline-flex items-center gap-1.5 text-sm font-semibold text-gray-500 transition-colors hover:text-gray-900",
+        "inline-flex items-center gap-1.5 text-sm font-semibold transition-colors",
+        variant === "inverse" ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-gray-900",
         className
       )}
     >

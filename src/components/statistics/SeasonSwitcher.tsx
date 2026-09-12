@@ -9,11 +9,14 @@ export function SeasonSwitcher({
   seasons,
   current,
   variant = "dark",
+  showAllOption = true,
 }: {
   seasons: string[];
   current: string;
   /** "dark" for navy/brand headers (default), "light" for white/light sections. */
   variant?: "dark" | "light";
+  /** Off for views that only ever make sense scoped to one season, like the squad poster. */
+  showAllOption?: boolean;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -42,7 +45,7 @@ export function SeasonSwitcher({
           variant === "dark" ? "text-white" : "text-gray-900"
         )}
       >
-        <option value={ALL_SEASONS}>All Seasons</option>
+        {showAllOption && <option value={ALL_SEASONS}>All Seasons</option>}
         {seasons.map((season) => (
           <option key={season} value={season}>
             {season} Season

@@ -12,7 +12,7 @@ import { BackButton } from "@/components/ui/BackButton";
 import { connectToDatabase } from "@/lib/db";
 import { PlayerModel } from "@/models/Player";
 import { getPlayerTotals, getPlayerRecentActivity, getAvailableSeasons } from "@/lib/stats";
-import { displayName, formatSessionDate, formatDecimal, formatPercent, formatJerseyNumber } from "@/lib/format";
+import { displayName, formatSessionDate, formatDecimal, formatPercent, getJerseyLabel } from "@/lib/format";
 import { currentSeason, isValidSeasonSelection, resolveSeasonFilter } from "@/lib/slugify";
 
 export const dynamic = "force-dynamic";
@@ -66,7 +66,7 @@ export default async function PlayerProfilePage({
               <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <h1 className="font-display text-3xl font-bold text-white">{displayName(player)}</h1>
                 <span className="font-display text-2xl font-bold text-white/40">
-                  #{formatJerseyNumber(player.jerseyNumber)}
+                  #{getJerseyLabel(player)}
                 </span>
               </div>
               <p className="mt-1 text-sm font-medium text-white/70">{player.position}</p>

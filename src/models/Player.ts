@@ -1,7 +1,7 @@
 import { Schema, model, models, type InferSchemaType } from "mongoose";
 import {
   POSITIONS,
-  POSITION_GROUPS,
+  ALL_POSITION_GROUPS,
   PLAYER_STATUSES,
   POSITION_TO_GROUP,
 } from "@/lib/constants";
@@ -15,7 +15,7 @@ const playerSchema = new Schema(
     photoUrl: { type: String },
     jerseyNumber: { type: Number, min: 0, max: 99 },
     position: { type: String, enum: POSITIONS, required: true },
-    positionGroup: { type: String, enum: POSITION_GROUPS, required: true },
+    positionGroup: { type: String, enum: ALL_POSITION_GROUPS, required: true },
     status: {
       type: String,
       enum: PLAYER_STATUSES,

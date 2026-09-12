@@ -29,6 +29,9 @@ export async function GET(request: NextRequest) {
       rows={report.rows}
       cutoffDate={report.cutoffDate}
       seasonLabel={report.seasonLabel}
+      trainingSessions={report.trainingSessions}
+      matches={report.matches}
+      totalSessions={report.totalSessions}
       logo={logo}
     />
   );

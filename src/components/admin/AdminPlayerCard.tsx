@@ -9,14 +9,14 @@ import { PlayerAvatar } from "@/components/players/PlayerAvatar";
 import { useToast } from "@/components/ui/Toast";
 import { setPlayerStatus } from "@/actions/players";
 import { POSITION_GROUP_STYLES } from "@/lib/position-colors";
-import { formatJerseyNumber } from "@/lib/format";
+import { getJerseyLabel } from "@/lib/format";
 import type { RosterEntry } from "@/lib/stats";
-import type { PositionGroup } from "@/lib/constants";
+import type { AnyPositionGroup } from "@/lib/constants";
 
 export function AdminPlayerCard({ player }: { player: RosterEntry }) {
   const { showToast } = useToast();
   const [pending, startTransition] = useTransition();
-  const style = POSITION_GROUP_STYLES[player.positionGroup as PositionGroup];
+  const style = POSITION_GROUP_STYLES[player.positionGroup as AnyPositionGroup];
 
   const toggleStatus = () => {
     const nextStatus = player.status === "active" ? "inactive" : "active";
@@ -42,7 +42,7 @@ export function AdminPlayerCard({ player }: { player: RosterEntry }) {
               <span
                 className={`mt-0.5 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text}`}
               >
-                {player.position} · #{formatJerseyNumber(player.jerseyNumber)}
+                {player.position} · #{getJerseyLabel(player)}
               </span>
             </div>
           </div>
