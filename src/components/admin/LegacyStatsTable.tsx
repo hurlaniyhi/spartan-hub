@@ -18,7 +18,7 @@ export type LegacyRow = {
 
 export function LegacyStatsTable({ season, rows }: { season: string; rows: LegacyRow[] }) {
   return (
-    <div className="flex flex-col divide-y divide-gray-100">
+    <div className="flex flex-col divide-y divide-white/10">
       {rows.map((row) => (
         <LegacyStatsRow key={row.playerId} season={season} row={row} />
       ))}
@@ -37,7 +37,7 @@ function NumberField({
 }) {
   return (
     <label className="flex flex-col items-center gap-1">
-      <span className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 sm:hidden">
+      <span className="text-[11px] font-semibold uppercase tracking-wide text-white/30 sm:hidden">
         {label}
       </span>
       <input
@@ -46,7 +46,7 @@ function NumberField({
         inputMode="numeric"
         value={value}
         onChange={(event) => onChange(Math.max(0, Number(event.target.value) || 0))}
-        className="h-10 w-20 rounded-lg border border-gray-200 bg-white text-center text-sm font-semibold text-gray-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30"
+        className="h-10 w-20 rounded-lg border border-white/10 bg-white/5 text-center text-sm font-semibold text-white focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand/30"
       />
     </label>
   );
@@ -81,7 +81,7 @@ function LegacyStatsRow({ season, row }: { season: string; row: LegacyRow }) {
     <div className="flex flex-wrap items-center gap-3 py-3 sm:flex-nowrap">
       <div className="flex min-w-0 flex-1 items-center gap-3 sm:basis-48">
         <PlayerAvatar photoUrl={row.photoUrl} name={row.name} size="sm" />
-        <span className="truncate text-sm font-semibold text-gray-900">{row.name}</span>
+        <span className="truncate text-sm font-semibold text-white">{row.name}</span>
       </div>
       <div className="flex flex-1 flex-wrap items-center gap-2 sm:flex-nowrap sm:justify-center">
         <NumberField label="Appearances" value={appearances} onChange={setAppearances} />

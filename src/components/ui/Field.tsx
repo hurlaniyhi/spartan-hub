@@ -15,18 +15,18 @@ function FieldWrapper({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={htmlFor} className="text-sm font-semibold text-gray-700">
+      <label htmlFor={htmlFor} className="text-sm font-semibold text-white/70">
         {label}
       </label>
       {children}
-      {hint && !error && <p className="text-xs text-gray-500">{hint}</p>}
-      {error && <p className="text-xs font-medium text-accent-dark">{error}</p>}
+      {hint && !error && <p className="text-xs text-white/40">{hint}</p>}
+      {error && <p className="text-xs font-medium text-red-400">{error}</p>}
     </div>
   );
 }
 
 const inputClasses =
-  "h-11 w-full rounded-xl border bg-white px-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand";
+  "h-11 w-full rounded-xl border bg-white/5 px-3.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand-light";
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
@@ -39,7 +39,7 @@ export function Input({ label, error, hint, id, className, ...props }: InputProp
     <FieldWrapper label={label} htmlFor={id!} error={error} hint={hint}>
       <input
         id={id}
-        className={cn(inputClasses, error ? "border-accent" : "border-gray-200", className)}
+        className={cn(inputClasses, error ? "border-accent" : "border-white/10", className)}
         {...props}
       />
     </FieldWrapper>
@@ -57,7 +57,12 @@ export function Select({ label, error, hint, id, className, children, ...props }
     <FieldWrapper label={label} htmlFor={id!} error={error} hint={hint}>
       <select
         id={id}
-        className={cn(inputClasses, error ? "border-accent" : "border-gray-200", className)}
+        className={cn(
+          inputClasses,
+          "[&>option]:text-gray-900",
+          error ? "border-accent" : "border-white/10",
+          className
+        )}
         {...props}
       >
         {children}
@@ -81,7 +86,7 @@ export function Textarea({ label, error, hint, id, className, ...props }: Textar
         className={cn(
           inputClasses,
           "h-auto resize-y py-2.5",
-          error ? "border-accent" : "border-gray-200",
+          error ? "border-accent" : "border-white/10",
           className
         )}
         {...props}

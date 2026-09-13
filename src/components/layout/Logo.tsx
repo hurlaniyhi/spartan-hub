@@ -22,7 +22,7 @@ export function Logo({
         priority
       />
       {withWordmark && (
-        <span className="font-display text-lg font-bold leading-none tracking-tight text-brand-dark">
+        <span className="font-display text-lg font-bold leading-none tracking-tight text-white">
           SPARTAN FC
         </span>
       )}

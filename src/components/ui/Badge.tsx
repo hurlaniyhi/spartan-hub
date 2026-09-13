@@ -3,10 +3,10 @@ import { cn } from "@/lib/cn";
 type Variant = "brand" | "accent" | "success" | "neutral";
 
 const variantClasses: Record<Variant, string> = {
-  brand: "bg-brand-light text-brand-dark",
-  accent: "bg-accent-light text-accent-dark",
-  success: "bg-emerald-50 text-emerald-700",
-  neutral: "bg-gray-100 text-gray-600",
+  brand: "bg-brand/25 text-violet-200",
+  accent: "bg-accent text-white",
+  success: "bg-emerald-400/20 text-emerald-300",
+  neutral: "bg-white/10 text-white/60",
 };
 
 export function Badge({

@@ -16,8 +16,8 @@ export default async function AdminSessionsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-gray-900">Sessions</h1>
-          <p className="mt-1 text-sm text-gray-500">Record and review training sessions and matches.</p>
+          <h1 className="font-display text-2xl font-bold text-white">Sessions</h1>
+          <p className="mt-1 text-sm text-white/50">Record and review training sessions and matches.</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -48,23 +48,23 @@ export default async function AdminSessionsPage() {
         <div className="flex flex-col gap-3">
           {sessions.map((session) => (
             <Link key={session.sessionId} href={`/admin/sessions/${session.sessionId}`} className="group block">
-              <Card className="transition-shadow group-hover:shadow-md">
+              <Card className="transition-colors group-hover:border-white/20">
                 <CardBody className="flex items-center justify-between gap-4">
                   <div>
                     <div className="mb-1.5 flex items-center gap-2">
                       <Badge variant={session.type === "match" ? "accent" : "brand"}>{session.type}</Badge>
-                      <span className="text-sm font-medium text-gray-400">
+                      <span className="text-sm font-medium text-white/40">
                         {formatSessionDate(session.date)}
                       </span>
                     </div>
-                    <p className="font-display text-base font-bold text-gray-900">
+                    <p className="font-display text-base font-bold text-white">
                       {session.opponent ? `Spartan FC vs ${session.opponent}` : "Training Session"}
                     </p>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-white/50">
                       {session.playersPresent} Present · {session.goals} Goals · {session.assists} Assists
                     </p>
                   </div>
-                  <span className="text-sm font-semibold text-brand opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="text-sm font-semibold text-violet-300 opacity-0 transition-opacity group-hover:opacity-100">
                     Edit
                   </span>
                 </CardBody>

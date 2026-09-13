@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Oswald } from "next/font/google";
 import { ToastProvider } from "@/components/ui/Toast";
+import { AppBackground } from "@/components/layout/AppBackground";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,13 +33,18 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0b0714",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${inter.variable} ${oswald.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-gray-50 text-gray-900 font-sans">
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
+        <AppBackground />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

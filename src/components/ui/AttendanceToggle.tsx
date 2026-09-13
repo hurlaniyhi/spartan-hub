@@ -16,10 +16,10 @@ export function AttendanceToggle({
       onClick={() => onChange(!present)}
       aria-pressed={present}
       className={cn(
-        "flex h-11 min-w-28 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-colors",
+        "flex h-11 min-w-28 items-center justify-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-[color,background-color,transform] active:scale-[0.97]",
         present
-          ? "bg-emerald-100 text-emerald-700"
-          : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+          ? "bg-emerald-400/20 text-emerald-300 ring-1 ring-emerald-400/30"
+          : "bg-white/10 text-white/50 hover:bg-white/15"
       )}
     >
       {present && <Check className="size-4" />}

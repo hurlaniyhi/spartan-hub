@@ -6,8 +6,8 @@ import { logoutAction } from "@/actions/auth";
 
 export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      <header className="border-b border-gray-100 bg-white">
+    <div className="min-h-screen pb-16">
+      <header className="border-b border-white/10 bg-ink/60 backdrop-blur-lg">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
           <Link href="/admin" className="flex items-center gap-2.5">
             <Image
@@ -17,13 +17,13 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
               height={32}
               className="rounded-full"
             />
-            <span className="font-display text-base font-bold text-brand-dark">Spartan Hub Admin</span>
+            <span className="font-display text-base font-bold text-white">Spartan Hub Admin</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link
               href="/"
               prefetch={false}
-              className="hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 sm:flex"
+              className="hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-white/60 hover:bg-white/10 hover:text-white sm:flex"
             >
               <Eye className="size-4" />
               Player View
@@ -31,7 +31,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <form action={logoutAction}>
               <button
                 type="submit"
-                className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100"
+                className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-white/60 hover:bg-white/10 hover:text-white"
               >
                 <LogOut className="size-4" />
                 <span className="hidden sm:inline">Sign Out</span>

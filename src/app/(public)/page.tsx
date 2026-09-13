@@ -84,11 +84,11 @@ export default async function HomePage({
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="font-display text-lg font-bold text-gray-900">Season Overview</h2>
-          <SeasonSwitcher seasons={seasons} current={season} variant="light" />
+          <h2 className="font-display text-lg font-bold text-white">Season Overview</h2>
+          <SeasonSwitcher seasons={seasons} current={season} />
         </div>
         <Card>
-          <CardBody className="grid grid-cols-2 gap-6 border-b border-gray-100 sm:grid-cols-3 lg:grid-cols-5">
+          <CardBody className="grid grid-cols-2 gap-6 border-b border-white/10 sm:grid-cols-3 lg:grid-cols-5">
             <StatTile value={snapshot.activePlayers} label="Active Players" icon={<Users className="size-4" />} />
             <StatTile
               value={snapshot.trainingSessions}
@@ -120,7 +120,7 @@ export default async function HomePage({
       <section className="mx-auto grid max-w-6xl gap-6 px-4 pb-12 sm:px-6 lg:grid-cols-2">
         <Card>
           <CardBody>
-            <h2 className="mb-4 font-display text-base font-bold text-gray-900">Top Performers</h2>
+            <h2 className="mb-4 font-display text-base font-bold text-white">Top Performers</h2>
             <div className="flex flex-col gap-4">
               <PerformerRow
                 icon={<Trophy className="size-5" />}
@@ -140,35 +140,35 @@ export default async function HomePage({
 
         <Card>
           <CardBody>
-            <h2 className="mb-4 font-display text-base font-bold text-gray-900">Latest Session</h2>
+            <h2 className="mb-4 font-display text-base font-bold text-white">Latest Session</h2>
             {latestSession ? (
               <Link
                 href={`/sessions/${latestSession.sessionId}`}
-                className="group flex flex-col gap-3 rounded-xl border border-gray-100 p-4 transition-colors hover:border-brand-light hover:bg-brand-light/40"
+                className="group flex flex-col gap-3 rounded-xl border border-white/10 p-4 transition-[color,background-color,border-color,transform] active:scale-[0.98] hover:border-brand-light/40 hover:bg-white/5"
               >
                 <div className="flex items-center justify-between">
                   <Badge variant={latestSession.type === "match" ? "accent" : "brand"}>
                     {latestSession.type}
                   </Badge>
-                  <span className="text-sm text-gray-400">{formatSessionDate(latestSession.date)}</span>
+                  <span className="text-sm text-white/40">{formatSessionDate(latestSession.date)}</span>
                 </div>
                 {latestSession.opponent && (
-                  <p className="text-sm font-semibold text-gray-900">
+                  <p className="text-sm font-semibold text-white">
                     Spartan FC vs {latestSession.opponent}
-                    {latestSession.result && <span className="text-gray-500"> · {latestSession.result}</span>}
+                    {latestSession.result && <span className="text-white/50"> · {latestSession.result}</span>}
                   </p>
                 )}
-                <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-4 text-sm text-white/50">
                   <span>{latestSession.playersPresent} Present</span>
                   <span>{latestSession.goals} Goals</span>
                   <span>{latestSession.assists} Assists</span>
                 </div>
-                <span className="flex items-center gap-1 text-sm font-semibold text-brand">
+                <span className="flex items-center gap-1 text-sm font-semibold text-violet-300">
                   View Session <ArrowRight className="size-3.5" />
                 </span>
               </Link>
             ) : (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-white/50">
                 No sessions recorded yet. Check back after the next training or match.
               </p>
             )}
@@ -178,8 +178,8 @@ export default async function HomePage({
 
       <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-display text-xl font-bold text-gray-900">Squad Preview</h2>
-          <Link href="/squad" className="flex items-center gap-1 text-sm font-semibold text-brand">
+          <h2 className="font-display text-xl font-bold text-white">Squad Preview</h2>
+          <Link href="/squad" className="flex items-center gap-1 text-sm font-semibold text-violet-300">
             View Full Squad <ArrowRight className="size-4" />
           </Link>
         </div>
@@ -190,7 +190,7 @@ export default async function HomePage({
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-500">The squad list is being put together — check back soon.</p>
+          <p className="text-sm text-white/50">The squad list is being put together — check back soon.</p>
         )}
       </section>
     </>
@@ -209,25 +209,25 @@ function PerformerRow({
   player?: { name: string; photoUrl?: string; slug: string; value: number };
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-gray-100 p-3">
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-light text-accent">
+    <div className="flex items-center gap-3 rounded-xl border border-white/10 p-3">
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent/20 text-red-300">
         {icon}
       </div>
       {player ? (
         <Link href={`/players/${player.slug}`} className="flex flex-1 items-center gap-3">
           <PlayerAvatar photoUrl={player.photoUrl} name={player.name} size="sm" />
           <div className="flex-1">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{label}</p>
-            <p className="text-sm font-bold text-gray-900">{player.name}</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-white/40">{label}</p>
+            <p className="text-sm font-bold text-white">{player.name}</p>
           </div>
-          <p className="font-display text-lg font-bold text-gray-900">
-            {player.value} <span className="text-xs font-medium text-gray-400">{statLabel}</span>
+          <p className="font-display text-lg font-bold text-white">
+            {player.value} <span className="text-xs font-medium text-white/40">{statLabel}</span>
           </p>
         </Link>
       ) : (
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{label}</p>
-          <p className="text-sm text-gray-500">No {statLabel.toLowerCase()} recorded yet.</p>
+          <p className="text-xs font-medium uppercase tracking-wide text-white/40">{label}</p>
+          <p className="text-sm text-white/50">No {statLabel.toLowerCase()} recorded yet.</p>
         </div>
       )}
     </div>

@@ -16,12 +16,12 @@ export function PlayerPerformanceRow({
   onChange: (next: PerformanceState) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 border-b border-gray-100 py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 border-b border-white/10 py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <PlayerAvatar photoUrl={player.photoUrl} name={player.name} size="sm" />
         <div>
-          <p className="text-sm font-semibold text-gray-900">{player.name}</p>
-          <p className="text-xs text-gray-400">{player.position}</p>
+          <p className="text-sm font-semibold text-white">{player.name}</p>
+          <p className="text-xs text-white/30">{player.position}</p>
         </div>
       </div>
 

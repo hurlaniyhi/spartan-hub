@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
         Back to Player View
       </Link>
 
-      <div className="relative w-full max-w-sm rounded-2xl bg-white p-8 shadow-2xl">
+      <div className="relative w-full max-w-sm rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.09] to-white/[0.03] p-8 shadow-2xl backdrop-blur-xl">
         <div className="mb-6 flex flex-col items-center text-center">
           <Image
             src="/images/spartan-logo.jpeg"
@@ -50,8 +50,8 @@ export default function AdminLoginPage() {
             height={64}
             className="mb-3 rounded-full shadow-md"
           />
-          <h1 className="font-display text-xl font-bold text-gray-900">Admin Sign In</h1>
-          <p className="mt-1 text-sm text-gray-500">Manage the Spartan FC squad and sessions.</p>
+          <h1 className="font-display text-xl font-bold text-white">Admin Sign In</h1>
+          <p className="mt-1 text-sm text-white/50">Manage the Spartan FC squad and sessions.</p>
         </div>
 
         <form action={formAction} className="flex flex-col gap-4">
@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
           />
 
           {state && !state.success && (
-            <div className="flex items-center gap-2 rounded-xl bg-accent-light px-3 py-2.5 text-sm font-medium text-accent-dark">
+            <div className="flex items-center gap-2 rounded-xl bg-accent/15 px-3 py-2.5 text-sm font-medium text-red-300">
               <AlertCircle className="size-4 shrink-0" />
               {state.message}
             </div>

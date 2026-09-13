@@ -37,17 +37,17 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="relative w-full max-w-md rounded-t-2xl bg-white p-6 shadow-xl sm:rounded-2xl"
+        className="relative w-full max-w-md rounded-t-2xl border border-white/10 bg-[#150f24] p-6 shadow-xl sm:rounded-2xl"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 id="modal-title" className="font-display text-lg font-semibold text-gray-900">
+          <h2 id="modal-title" className="font-display text-lg font-semibold text-white">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-full p-1 text-white/40 hover:bg-white/10 hover:text-white/80"
           >
             <X className="size-5" />
           </button>

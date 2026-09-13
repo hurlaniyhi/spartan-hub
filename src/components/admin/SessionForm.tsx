@@ -123,7 +123,7 @@ export function SessionForm({
       <Card>
         <CardBody className="flex flex-col gap-5">
           <div>
-            <p className="mb-2 text-sm font-semibold text-gray-700">What happened today?</p>
+            <p className="mb-2 text-sm font-semibold text-white/70">What happened today?</p>
             <div className="grid grid-cols-2 gap-3">
               <TypeButton
                 active={type === "training"}
@@ -180,8 +180,8 @@ export function SessionForm({
 
           {type === "match" && (
             <div>
-              <p className="mb-2 text-sm font-semibold text-gray-700">
-                Outcome <span className="font-normal text-gray-400">(optional)</span>
+              <p className="mb-2 text-sm font-semibold text-white/70">
+                Outcome <span className="font-normal text-white/30">(optional)</span>
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {OUTCOME_OPTIONS.map((option) => {
@@ -195,11 +195,11 @@ export function SessionForm({
                         "flex flex-col items-center justify-center gap-1 rounded-xl border-2 py-3 text-sm font-semibold transition-colors",
                         active
                           ? option.value === "win"
-                            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                            ? "border-emerald-400 bg-emerald-400/15 text-emerald-300"
                             : option.value === "loss"
-                              ? "border-accent bg-accent-light text-accent-dark"
-                              : "border-gray-400 bg-gray-100 text-gray-700"
-                          : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+                              ? "border-accent bg-accent/15 text-red-300"
+                              : "border-white/30 bg-white/10 text-white/80"
+                          : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10"
                       )}
                     >
                       {option.icon}
@@ -208,7 +208,7 @@ export function SessionForm({
                   );
                 })}
               </div>
-              <p className="mt-1.5 text-xs text-gray-400">
+              <p className="mt-1.5 text-xs text-white/30">
                 Tap again to clear. Only used to tally each player&apos;s win/draw/loss record —
                 leave it blank if you&apos;d rather not track it.
               </p>
@@ -226,12 +226,12 @@ export function SessionForm({
 
       <Card>
         <CardBody>
-          <p className="mb-1 font-display text-base font-bold text-gray-900">Player Performance</p>
-          <p className="mb-2 text-sm text-gray-500">
+          <p className="mb-1 font-display text-base font-bold text-white">Player Performance</p>
+          <p className="mb-2 text-sm text-white/50">
             Mark who was present, then use the +/- buttons for goals and assists.
           </p>
           {roster.length === 0 ? (
-            <p className="py-6 text-center text-sm text-gray-500">
+            <p className="py-6 text-center text-sm text-white/50">
               No active players to record yet — add players first.
             </p>
           ) : (
@@ -249,12 +249,12 @@ export function SessionForm({
         </CardBody>
       </Card>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-100 bg-white/95 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-ink/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <p className="text-sm font-medium text-gray-600">
-            <strong className="text-gray-900">{summary.present}</strong> Present ·{" "}
-            <strong className="text-gray-900">{summary.goals}</strong> Goals ·{" "}
-            <strong className="text-gray-900">{summary.assists}</strong> Assists
+          <p className="text-sm font-medium text-white/60">
+            <strong className="text-white">{summary.present}</strong> Present ·{" "}
+            <strong className="text-white">{summary.goals}</strong> Goals ·{" "}
+            <strong className="text-white">{summary.assists}</strong> Assists
           </p>
           <div className="flex items-center gap-2">
             <Button variant="outline" href="/admin/sessions">
@@ -288,8 +288,8 @@ function TypeButton({
       className={cn(
         "flex items-center justify-center gap-2 rounded-2xl border-2 py-4 text-sm font-bold transition-colors",
         active
-          ? "border-brand bg-brand-light text-brand-dark"
-          : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+          ? "border-brand bg-brand/20 text-white"
+          : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10"
       )}
     >
       {icon}

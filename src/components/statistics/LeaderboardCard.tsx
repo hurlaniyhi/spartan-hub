@@ -33,7 +33,7 @@ export function LeaderboardCard({
           <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-dark text-white shadow-sm">
             <Icon className="size-4" />
           </div>
-          <h2 className="font-display text-base font-bold text-gray-900">{title}</h2>
+          <h2 className="font-display text-base font-bold text-white">{title}</h2>
         </div>
 
         {entries.length === 0 ? (
@@ -45,26 +45,26 @@ export function LeaderboardCard({
                 <Link
                   href={`/players/${entry.slug}`}
                   className={cn(
-                    "flex items-center gap-3 rounded-xl px-2.5 py-2.5 transition-colors hover:bg-gray-50",
-                    index === 0 && "bg-amber-50/70"
+                    "flex items-center gap-3 rounded-xl px-2.5 py-2.5 transition-colors hover:bg-white/5",
+                    index === 0 && "bg-amber-400/10"
                   )}
                 >
                   <span
                     className={cn(
                       "flex size-7 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold",
-                      index < 3 ? RANK_STYLES[index] : "bg-gray-100 text-gray-400"
+                      index < 3 ? RANK_STYLES[index] : "bg-white/10 text-white/40"
                     )}
                   >
                     {index + 1}
                   </span>
                   <PlayerAvatar photoUrl={entry.photoUrl} name={entry.name} size="sm" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-gray-900">{entry.name}</p>
-                    <p className="truncate text-xs text-gray-400">{entry.position}</p>
+                    <p className="truncate text-sm font-semibold text-white">{entry.name}</p>
+                    <p className="truncate text-xs text-white/40">{entry.position}</p>
                   </div>
-                  <p className="font-display text-base font-bold text-accent-dark">
+                  <p className="font-display text-base font-bold text-red-300">
                     {formatValue(entry.value)}
-                    <span className="ml-1 text-xs font-medium text-gray-400">{valueLabel}</span>
+                    <span className="ml-1 text-xs font-medium text-white/40">{valueLabel}</span>
                   </p>
                 </Link>
               </li>
