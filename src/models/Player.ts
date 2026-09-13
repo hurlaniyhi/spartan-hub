@@ -24,6 +24,7 @@ const playerSchema = new Schema(
     },
     dateJoined: { type: Date, required: true, default: Date.now },
     bio: { type: String, trim: true, maxlength: 1000 },
+    isCaptain: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

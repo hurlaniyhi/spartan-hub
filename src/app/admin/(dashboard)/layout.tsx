@@ -17,13 +17,16 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
               height={32}
               className="rounded-full"
             />
-            <span className="font-display text-base font-bold text-white">Spartan Hub Admin</span>
+            <span className="hidden font-display text-base font-bold text-white sm:inline">
+              Spartan Hub Admin
+            </span>
           </Link>
           <div className="flex items-center gap-2">
             <Link
               href="/"
               prefetch={false}
-              className="hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-white/60 hover:bg-white/10 hover:text-white sm:flex"
+              title="Switch to the public player view"
+              className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-white/60 hover:bg-white/10 hover:text-white"
             >
               <Eye className="size-4" />
               Player View

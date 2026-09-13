@@ -507,6 +507,7 @@ export interface RosterEntry {
   positionGroup: string;
   status: PlayerStatus;
   bio?: string;
+  isCaptain: boolean;
   appearances: number;
   goals: number;
   assists: number;
@@ -548,6 +549,7 @@ export async function getPlayerRoster(): Promise<RosterEntry[]> {
       positionGroup: player.positionGroup,
       status: player.status as PlayerStatus,
       bio: player.bio ?? undefined,
+      isCaptain: player.isCaptain ?? false,
       appearances: playerTotals?.appearances ?? 0,
       goals: playerTotals?.goals ?? 0,
       assists: playerTotals?.assists ?? 0,

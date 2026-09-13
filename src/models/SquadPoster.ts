@@ -17,6 +17,7 @@ const squadPosterPlayerSchema = new Schema(
     positionGroup: { type: String, enum: ALL_POSITION_GROUPS, required: true },
     photoUrl: { type: String },
     bio: { type: String },
+    isCaptain: { type: Boolean },
   },
   { _id: false }
 );

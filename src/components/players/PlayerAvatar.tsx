@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/cn";
+import { CaptainBadge } from "@/components/players/CaptainBadge";
 
 function initials(name: string) {
   return name
@@ -17,35 +18,49 @@ const sizeClasses = {
   xl: "size-32 text-3xl",
 };
 
+const captainBadgeSizes = {
+  sm: "size-4",
+  md: "size-5",
+  lg: "size-7",
+  xl: "size-8",
+};
+
 export function PlayerAvatar({
   photoUrl,
   name,
   size = "md",
+  isCaptain = false,
   className,
 }: {
   photoUrl?: string;
   name: string;
   size?: keyof typeof sizeClasses;
+  isCaptain?: boolean;
   className?: string;
 }) {
-  if (photoUrl) {
-    return (
-      <div className={cn("relative shrink-0 overflow-hidden rounded-full bg-white/10", sizeClasses[size], className)}>
-        <Image src={photoUrl} alt={name} fill className="object-cover" sizes="128px" />
-      </div>
-    );
-  }
-
   return (
-    <div
-      className={cn(
-        "flex shrink-0 items-center justify-center rounded-full bg-brand-light font-display font-bold text-brand",
-        sizeClasses[size],
-        className
+    <div className="relative inline-block shrink-0">
+      {photoUrl ? (
+        <div className={cn("relative overflow-hidden rounded-full bg-white/10", sizeClasses[size], className)}>
+          <Image src={photoUrl} alt={name} fill className="object-cover" sizes="128px" />
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "flex items-center justify-center rounded-full bg-brand-light font-display font-bold text-brand",
+            sizeClasses[size],
+            className
+          )}
+          aria-hidden
+        >
+          {initials(name)}
+        </div>
       )}
-      aria-hidden
-    >
-      {initials(name)}
+      {isCaptain && (
+        <div className="absolute -bottom-1 -right-1">
+          <CaptainBadge size={captainBadgeSizes[size]} />
+        </div>
+      )}
     </div>
   );
 }

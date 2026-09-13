@@ -61,7 +61,12 @@ export default async function PlayerProfilePage({
       <Card className="overflow-hidden">
         <div className="bg-brand-dark px-6 py-8 sm:px-8">
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-            <PlayerAvatar photoUrl={player.photoUrl} name={displayName(player)} size="xl" />
+            <PlayerAvatar
+              photoUrl={player.photoUrl}
+              name={displayName(player)}
+              size="xl"
+              isCaptain={player.isCaptain}
+            />
             <div className="flex-1">
               <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                 <h1 className="font-display text-3xl font-bold text-white">{displayName(player)}</h1>
@@ -70,12 +75,12 @@ export default async function PlayerProfilePage({
                 </span>
               </div>
               <p className="mt-1 text-sm font-medium text-white/70">{player.position}</p>
-              <Badge
-                variant={player.status === "active" ? "success" : "neutral"}
-                className="mt-2"
-              >
-                {player.status}
-              </Badge>
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                <Badge variant={player.status === "active" ? "success" : "neutral"}>
+                  {player.status}
+                </Badge>
+                {player.isCaptain && <Badge variant="brand">Captain</Badge>}
+              </div>
             </div>
             <div className="sm:self-start">
               <SeasonSwitcher seasons={seasons} current={season} />

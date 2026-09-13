@@ -52,6 +52,7 @@ export async function savePlayer(
     dateJoined: formData.get("dateJoined"),
     bio: formData.get("bio") || undefined,
   };
+  const isCaptain = formData.get("isCaptain") === "true";
 
   const parsed = playerFormSchema.safeParse(raw);
   if (!parsed.success) {
@@ -88,6 +89,15 @@ export async function savePlayer(
     }
   }
 
+  // Only one player can be captain at a time — marking a new one un-captains
+  // whoever held it before, rather than requiring the admin to do that by hand.
+  if (isCaptain) {
+    await PlayerModel.updateMany(
+      { isCaptain: true, ...(playerId ? { _id: { $ne: playerId } } : {}) },
+      { isCaptain: false }
+    );
+  }
+
   let photoUrl = existing?.photoUrl;
   const photoFile = formData.get("photo");
   if (photoFile instanceof File && photoFile.size > 0) {
@@ -107,10 +117,10 @@ export async function savePlayer(
   const slug = existing?.slug ?? (await uniqueSlug(slugify(slugSource)));
 
   if (existing) {
-    existing.set({ ...parsed.data, photoUrl });
+    existing.set({ ...parsed.data, photoUrl, isCaptain });
     await existing.save();
   } else {
-    await PlayerModel.create({ ...parsed.data, photoUrl, slug });
+    await PlayerModel.create({ ...parsed.data, photoUrl, slug, isCaptain });
   }
 
   revalidatePath("/admin/players");

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Camera } from "lucide-react";
+import { Camera, Crown } from "lucide-react";
 import { Input, Select, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
@@ -13,9 +13,15 @@ import { useToast } from "@/components/ui/Toast";
 import { savePlayer } from "@/actions/players";
 import { playerFormSchema, type PlayerFormValues } from "@/lib/validation/player";
 import { POSITIONS, PLAYER_STATUSES } from "@/lib/constants";
+import { cn } from "@/lib/cn";
 import { format } from "date-fns";
 
-type ExistingPlayer = PlayerFormValues & { id: string; photoUrl?: string; name: string };
+type ExistingPlayer = PlayerFormValues & {
+  id: string;
+  photoUrl?: string;
+  name: string;
+  isCaptain?: boolean;
+};
 
 export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer }) {
   const router = useRouter();
@@ -24,6 +30,7 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
   const [photoPreview, setPhotoPreview] = useState<string | undefined>(existingPlayer?.photoUrl);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [cropSource, setCropSource] = useState<string | null>(null);
+  const [isCaptain, setIsCaptain] = useState(existingPlayer?.isCaptain ?? false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -78,6 +85,7 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
     formData.set("status", values.status);
     formData.set("dateJoined", values.dateJoined);
     if (values.bio) formData.set("bio", values.bio);
+    formData.set("isCaptain", String(isCaptain));
     if (photoFile) formData.set("photo", photoFile);
 
     const result = await savePlayer(existingPlayer?.id ?? null, formData);
@@ -125,6 +133,21 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
           </p>
         </div>
       </div>
+
+      <button
+        type="button"
+        aria-pressed={isCaptain}
+        onClick={() => setIsCaptain((value) => !value)}
+        className={cn(
+          "flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-[color,background-color,border-color,transform] active:scale-[0.97]",
+          isCaptain
+            ? "border-transparent bg-gradient-to-r from-yellow-300 to-amber-500 text-gray-900 shadow-[0_0_16px_2px_rgba(251,191,36,0.4)]"
+            : "border-white/15 bg-white/5 text-white/60 hover:bg-white/10"
+        )}
+      >
+        <Crown className="size-4" />
+        {isCaptain ? "Team Captain" : "Mark as Captain"}
+      </button>
 
       {cropSource && (
         <PhotoCropModal imageSrc={cropSource} onCancel={handleCropCancel} onConfirm={handleCropConfirm} />

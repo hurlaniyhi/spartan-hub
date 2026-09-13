@@ -17,6 +17,7 @@ export interface SquadPosterPlayer {
   /** Only really used for a coach's card — their role blurb, and the source
    * of a "Unique number: ..." fallback jersey label (see lib/format.ts). */
   bio?: string;
+  isCaptain?: boolean;
 }
 
 export interface SquadPosterData {
@@ -40,6 +41,7 @@ async function generateFromActiveRoster(): Promise<SquadPosterPlayer[]> {
       positionGroup: player.positionGroup,
       photoUrl: player.photoUrl,
       bio: player.bio,
+      isCaptain: player.isCaptain,
     }));
 }
 
@@ -69,6 +71,7 @@ export async function getSquadPoster(season: string): Promise<SquadPosterData> {
           positionGroup: player.positionGroup,
           photoUrl: player.photoUrl ?? undefined,
           bio: player.bio ?? undefined,
+          isCaptain: player.isCaptain ?? undefined,
         })),
         generatedAt: existing.generatedAt,
         isLive: false,

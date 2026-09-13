@@ -34,12 +34,24 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   hint?: string;
 };
 
-export function Input({ label, error, hint, id, className, ...props }: InputProps) {
+export function Input({ label, error, hint, id, className, type, onFocus, ...props }: InputProps) {
+  const isNumber = type === "number";
   return (
     <FieldWrapper label={label} htmlFor={id!} error={error} hint={hint}>
       <input
         id={id}
-        className={cn(inputClasses, error ? "border-accent" : "border-white/10", className)}
+        type={type}
+        onFocus={(event) => {
+          onFocus?.(event);
+          if (isNumber) event.target.select();
+        }}
+        className={cn(
+          inputClasses,
+          isNumber &&
+            "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+          error ? "border-accent" : "border-white/10",
+          className
+        )}
         {...props}
       />
     </FieldWrapper>

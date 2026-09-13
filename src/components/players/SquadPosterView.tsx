@@ -6,6 +6,7 @@ import { POSITION_GROUPS, STAFF_GROUP, type PositionGroup } from "@/lib/constant
 import type { SquadPosterData, SquadPosterPlayer } from "@/lib/squad-poster";
 import { SeasonSwitcher } from "@/components/statistics/SeasonSwitcher";
 import { Button } from "@/components/ui/Button";
+import { CaptainBadge } from "@/components/players/CaptainBadge";
 
 const POSITION_ABBR: Record<PositionGroup, string> = {
   Goalkeeper: "GK",
@@ -64,7 +65,7 @@ function PosterPlayerCard({ player }: { player: SquadPosterPlayer }) {
         {abbr}
       </span>
 
-      <div className="mx-auto mt-4 flex size-28 shrink-0 items-center justify-center">
+      <div className="relative mx-auto mt-4 flex size-28 shrink-0 items-center justify-center">
         <div className={cn("relative size-28 overflow-hidden rounded-full bg-brand-dark ring-4", style.ring, style.glow)}>
           {player.photoUrl ? (
             <Image src={player.photoUrl} alt={player.name} fill sizes="112px" className="object-cover" />
@@ -83,6 +84,11 @@ function PosterPlayerCard({ player }: { player: SquadPosterPlayer }) {
             <span className="text-[8px] font-black tracking-wider text-white">SPFC</span>
           </div>
         </div>
+        {player.isCaptain && (
+          <div className="absolute -bottom-1 -right-1">
+            <CaptainBadge size="size-6" />
+          </div>
+        )}
       </div>
 
       <p className="mt-3 truncate font-display text-base font-black uppercase tracking-wide text-white">

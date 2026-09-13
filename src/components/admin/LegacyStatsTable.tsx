@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { PlayerAvatar } from "@/components/players/PlayerAvatar";
 import { Button } from "@/components/ui/Button";
+import { NumberField } from "@/components/ui/NumberField";
 import { useToast } from "@/components/ui/Toast";
 import { saveLegacyRecord } from "@/actions/legacy";
 
@@ -23,32 +24,6 @@ export function LegacyStatsTable({ season, rows }: { season: string; rows: Legac
         <LegacyStatsRow key={row.playerId} season={season} row={row} />
       ))}
     </div>
-  );
-}
-
-function NumberField({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: number;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <label className="flex flex-col items-center gap-1">
-      <span className="text-[11px] font-semibold uppercase tracking-wide text-white/30 sm:hidden">
-        {label}
-      </span>
-      <input
-        type="number"
-        min={0}
-        inputMode="numeric"
-        value={value}
-        onChange={(event) => onChange(Math.max(0, Number(event.target.value) || 0))}
-        className="h-10 w-20 rounded-lg border border-white/10 bg-white/5 text-center text-sm font-semibold text-white focus:border-brand-light focus:outline-none focus:ring-2 focus:ring-brand/30"
-      />
-    </label>
   );
 }
 

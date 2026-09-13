@@ -22,6 +22,7 @@ export function PlayerCard({ player }: { player: RosterEntry }) {
               photoUrl={player.photoUrl}
               name={player.name}
               size="lg"
+              isCaptain={player.isCaptain}
               className={cn("ring-4", style.ring, style.glow)}
             />
             <span className="font-display text-3xl font-bold text-white/20 transition-colors group-hover:text-white/40">

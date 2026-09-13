@@ -36,6 +36,11 @@ const CARD_WIDTH = PX(171);
 const STAFF_CARD_WIDTH = PX(358);
 // Both card types use the same size-28 (112px) photo on the web.
 const PHOTO_SIZE = PX(112);
+// Matches the web's size-6 (24px) gold captain badge, overlapping the photo's bottom-right corner.
+const CAPTAIN_BADGE_SIZE = PX(24);
+// Matches the web's "-bottom-1 -right-1" offset (Tailwind's 1 = 4px): the badge
+// hangs slightly outside the photo's corner rather than sitting flush inside it.
+const CAPTAIN_BADGE_OFFSET = PX(4);
 
 const POSITION_ABBR: Record<PositionGroup, string> = {
   Goalkeeper: "GK",
@@ -298,6 +303,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: PX(6), // px-1.5
     borderRadius: 3,
   },
+  // Hangs off the photo circle's bottom-right corner by CAPTAIN_BADGE_OFFSET,
+  // matching the web card's "-bottom-1 -right-1" placement exactly: top/left
+  // offset to that corner (PX(30) + PHOTO_SIZE / PX(29.5) + PHOTO_SIZE, from
+  // the photo-wrapper's marginTop/card padding) plus the offset, minus the
+  // badge's own size.
+  captainBadge: {
+    position: "absolute",
+    top: PX(30) + PHOTO_SIZE + CAPTAIN_BADGE_OFFSET - CAPTAIN_BADGE_SIZE,
+    left: PX(29.5) + PHOTO_SIZE + CAPTAIN_BADGE_OFFSET - CAPTAIN_BADGE_SIZE,
+    width: CAPTAIN_BADGE_SIZE,
+    height: CAPTAIN_BADGE_SIZE,
+    borderRadius: CAPTAIN_BADGE_SIZE / 2,
+    backgroundColor: "#FBBF24",
+    color: "#111827",
+    fontSize: PX(11),
+    fontFamily: "Helvetica-Bold",
+    textAlign: "center",
+    paddingTop: PX(5),
+    borderWidth: 1.5,
+    borderColor: "#0b0714",
+  },
   initialsFill: { backgroundColor: BRAND, alignItems: "center", justifyContent: "center" },
   initialsText: { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#FFFFFF" },
   photoBadgeBand: {
@@ -477,6 +503,7 @@ function PosterCard({ player, logo }: { player: SquadPosterPlayer; logo: Buffer 
          everything else, exactly like the web card's badges. */}
       <Text style={styles.jerseyBadge}>{getJerseyLabel(player)}</Text>
       <Text style={styles.posBadge}>{abbr}</Text>
+      {player.isCaptain && <Text style={styles.captainBadge}>C</Text>}
     </View>
   );
 }

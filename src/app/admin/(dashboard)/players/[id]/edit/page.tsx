@@ -38,6 +38,7 @@ export default async function EditPlayerPage({
           dateJoined: format(new Date(player.dateJoined), "yyyy-MM-dd"),
           bio: player.bio ?? undefined,
           photoUrl: player.photoUrl ?? undefined,
+          isCaptain: player.isCaptain ?? false,
         }}
       />
     </div>

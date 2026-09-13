@@ -36,7 +36,7 @@ export function AdminPlayerCard({ player }: { player: RosterEntry }) {
       <div className="p-5">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <PlayerAvatar photoUrl={player.photoUrl} name={player.name} size="md" />
+            <PlayerAvatar photoUrl={player.photoUrl} name={player.name} size="md" isCaptain={player.isCaptain} />
             <div>
               <p className="font-display text-base font-bold text-white">{player.name}</p>
               <span
