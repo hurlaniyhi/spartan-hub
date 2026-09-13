@@ -9,8 +9,8 @@ const variantClasses: Record<Variant, string> = {
   primary: "bg-brand text-white hover:bg-brand-dark focus-visible:outline-brand",
   accent: "bg-accent text-white hover:bg-accent-dark focus-visible:outline-accent",
   outline:
-    "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus-visible:outline-brand",
-  ghost: "text-brand hover:bg-brand-light focus-visible:outline-brand",
+    "border border-white/15 bg-white/5 text-white hover:bg-white/10 focus-visible:outline-brand-light",
+  ghost: "text-white/70 hover:bg-white/10 hover:text-white focus-visible:outline-brand-light",
   danger: "bg-accent-dark text-white hover:bg-red-900 focus-visible:outline-accent-dark",
   // For use on dark/photo backgrounds, e.g. the homepage hero.
   inverse: "border border-white/40 text-white hover:bg-white/10 focus-visible:outline-white",
@@ -44,7 +44,7 @@ type ButtonAsLink = CommonProps & { href: string; native?: boolean } & Omit<
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-full font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center rounded-full font-semibold transition-[color,background-color,border-color,transform] active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
 export function Button({
   variant = "primary",

@@ -38,7 +38,7 @@ export function AdminPlayerCard({ player }: { player: RosterEntry }) {
           <div className="flex items-center gap-3">
             <PlayerAvatar photoUrl={player.photoUrl} name={player.name} size="md" />
             <div>
-              <p className="font-display text-base font-bold text-gray-900">{player.name}</p>
+              <p className="font-display text-base font-bold text-white">{player.name}</p>
               <span
                 className={`mt-0.5 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${style.bg} ${style.text}`}
               >
@@ -49,15 +49,15 @@ export function AdminPlayerCard({ player }: { player: RosterEntry }) {
           <Badge variant={player.status === "active" ? "success" : "neutral"}>{player.status}</Badge>
         </div>
 
-        <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
+        <div className="mt-4 flex items-center gap-4 text-sm text-white/50">
           <span>
-            <strong className="text-gray-900">{player.appearances}</strong> Apps
+            <strong className="text-white">{player.appearances}</strong> Apps
           </span>
           <span>
-            <strong className="text-brand-dark">{player.goals}</strong> Goals
+            <strong className="text-violet-300">{player.goals}</strong> Goals
           </span>
           <span>
-            <strong className="text-accent-dark">{player.assists}</strong> Assists
+            <strong className="text-red-300">{player.assists}</strong> Assists
           </span>
         </div>
 

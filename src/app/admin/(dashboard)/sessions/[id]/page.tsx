@@ -57,8 +57,8 @@ export default async function EditSessionPage({
   return (
     <div>
       <BackButton fallbackHref="/admin/sessions" label="Back to Sessions" className="mb-4" />
-      <h1 className="mb-1 font-display text-2xl font-bold text-gray-900">Edit Session</h1>
-      <p className="mb-6 text-sm text-gray-500">Update attendance, goals and assists for this session.</p>
+      <h1 className="mb-1 font-display text-2xl font-bold text-white">Edit Session</h1>
+      <p className="mb-6 text-sm text-white/50">Update attendance, goals and assists for this session.</p>
       <SessionForm
         roster={roster}
         existingSession={{

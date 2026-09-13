@@ -120,7 +120,7 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
             className="hidden"
             onChange={onPhotoChange}
           />
-          <p className="mt-1.5 text-xs text-gray-400">
+          <p className="mt-1.5 text-xs text-white/30">
             JPG, PNG or WEBP, up to 3MB. You&apos;ll be able to reposition it next.
           </p>
         </div>
@@ -186,7 +186,7 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
       />
 
       {formError && (
-        <p className="rounded-xl bg-accent-light px-3.5 py-2.5 text-sm font-medium text-accent-dark">
+        <p className="rounded-xl bg-accent/15 px-3.5 py-2.5 text-sm font-medium text-red-300">
           {formError}
         </p>
       )}

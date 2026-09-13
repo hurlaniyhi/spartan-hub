@@ -39,7 +39,7 @@ export function BackButton({
       onClick={handleClick}
       className={cn(
         "inline-flex items-center gap-1.5 text-sm font-semibold transition-colors",
-        variant === "inverse" ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-gray-900",
+        variant === "inverse" ? "text-white/60 hover:text-white" : "text-white/60 hover:text-white",
         className
       )}
     >

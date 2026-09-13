@@ -23,14 +23,14 @@ export function Stepper({
         aria-label={`Decrease ${label}`}
         disabled={disabled || value <= 0}
         onClick={() => onChange(Math.max(0, value - 1))}
-        className="flex size-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-40"
+        className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/60 transition-[color,background-color,transform] active:scale-[0.93] hover:bg-white/10 disabled:pointer-events-none disabled:opacity-40"
       >
         <Minus className="size-4" />
       </button>
       <span
         className={cn(
           "w-6 text-center font-display text-base font-bold tabular-nums",
-          accent ? "text-accent" : "text-gray-900"
+          accent ? "text-accent" : "text-white"
         )}
       >
         {value}
@@ -41,7 +41,7 @@ export function Stepper({
         disabled={disabled}
         onClick={() => onChange(value + 1)}
         className={cn(
-          "flex size-9 shrink-0 items-center justify-center rounded-full text-white transition-colors disabled:pointer-events-none disabled:opacity-40",
+          "flex size-9 shrink-0 items-center justify-center rounded-full text-white transition-[background-color,transform] active:scale-[0.93] disabled:pointer-events-none disabled:opacity-40",
           accent ? "bg-accent hover:bg-accent-dark" : "bg-brand hover:bg-brand-dark"
         )}
       >

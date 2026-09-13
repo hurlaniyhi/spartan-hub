@@ -28,8 +28,8 @@ export function LegacySeasonPicker({ season }: { season: string }) {
   };
 
   return (
-    <div className="flex items-center gap-2 rounded-full bg-gray-100 py-1 pl-3 pr-2 ring-1 ring-gray-200">
-      <CalendarRange className="size-4 text-gray-500" />
+    <div className="flex items-center gap-2 rounded-full bg-white/5 py-1 pl-3 pr-2 ring-1 ring-white/10">
+      <CalendarRange className="size-4 text-white/50" />
       <input
         type="number"
         inputMode="numeric"
@@ -41,9 +41,9 @@ export function LegacySeasonPicker({ season }: { season: string }) {
           if (event.key === "Enter") go(value);
         }}
         aria-label="Season year"
-        className="w-16 bg-transparent text-sm font-semibold text-gray-900 focus:outline-none"
+        className="w-16 bg-transparent text-sm font-semibold text-white focus:outline-none"
       />
-      <span className="text-sm font-medium text-gray-500">Season</span>
+      <span className="text-sm font-medium text-white/50">Season</span>
     </div>
   );
 }

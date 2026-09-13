@@ -69,18 +69,18 @@ export default async function SessionDetailPage({
           )}
         </div>
 
-        <CardBody className="grid grid-cols-3 gap-4 border-b border-gray-100 text-center">
+        <CardBody className="grid grid-cols-3 gap-4 border-b border-white/10 text-center">
           <StatTile value={present.length} label="Present" icon={<Users className="size-4" />} className="items-center" />
           <StatTile value={totalGoals} label="Goals" icon={<SoccerBallIcon className="size-4" />} accent className="items-center" />
           <StatTile value={totalAssists} label="Assists" icon={<SportShoe className="size-4" />} accent className="items-center" />
         </CardBody>
 
         <CardBody>
-          <h2 className="mb-3 font-display text-base font-bold text-gray-900">Player Performance</h2>
+          <h2 className="mb-3 font-display text-base font-bold text-white">Player Performance</h2>
           {session.performances.length === 0 ? (
-            <p className="text-sm text-gray-500">No performance was recorded for this session.</p>
+            <p className="text-sm text-white/50">No performance was recorded for this session.</p>
           ) : (
-            <ul className="flex flex-col divide-y divide-gray-100">
+            <ul className="flex flex-col divide-y divide-white/10">
               {session.performances.map((performance) => (
                 <li key={performance.playerId} className="flex items-center justify-between gap-3 py-3">
                   <Link
@@ -88,22 +88,22 @@ export default async function SessionDetailPage({
                     className="flex min-w-0 flex-1 items-center gap-3"
                   >
                     <PlayerAvatar photoUrl={performance.photoUrl} name={performance.name} size="sm" />
-                    <span className="truncate text-sm font-semibold text-gray-900">{performance.name}</span>
+                    <span className="truncate text-sm font-semibold text-white">{performance.name}</span>
                   </Link>
                   <div className="flex items-center gap-4 text-sm">
                     {performance.attended ? (
-                      <span className="flex items-center gap-1 font-medium text-emerald-600">
+                      <span className="flex items-center gap-1 font-medium text-emerald-400">
                         <Check className="size-3.5" /> Present
                       </span>
                     ) : (
-                      <span className="text-gray-400">Absent</span>
+                      <span className="text-white/30">Absent</span>
                     )}
                     {performance.attended && (
                       <>
-                        <span className="flex items-center gap-1 font-medium text-brand-dark">
+                        <span className="flex items-center gap-1 font-medium text-violet-300">
                           <SoccerBallIcon className="size-3.5" /> {performance.goals}
                         </span>
-                        <span className="flex items-center gap-1 font-medium text-accent-dark">
+                        <span className="flex items-center gap-1 font-medium text-red-300">
                           <SportShoe className="size-3.5" /> {performance.assists}
                         </span>
                       </>

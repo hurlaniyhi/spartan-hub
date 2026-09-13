@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
+/*
+ * App-wide dark theme, lifted from the Squad Poster screen's own look
+ * (src/components/players/SquadPosterView.tsx — that screen stays
+ * hand-authored and untouched; this is just the same palette reused
+ * everywhere else via tokens).
+ *
+ * Text color convention: solid `text-white` for headings, then a fixed
+ * opacity ladder for decreasing emphasis — white/70, /50, /40, /30, /20.
+ * Use those exact steps rather than inventing new ones per component.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b0714;
+  --foreground: #ffffff;
 
   /* Sampled directly from the Spartan FC crest */
   --color-brand: #2905a3;
@@ -11,6 +21,10 @@
   --color-accent: #db261d;
   --color-accent-dark: #a81912;
   --color-accent-light: #fdecea;
+  /* The Squad Poster's base ink color, exposed as a token (bg-ink/text-ink)
+   * for the few new spots outside that screen that need the exact value —
+   * root background, sticky chrome backing, theme-color meta. */
+  --color-ink: #0b0714;
 }
 
 @theme inline {
@@ -22,6 +36,7 @@
   --color-accent: var(--color-accent);
   --color-accent-dark: var(--color-accent-dark);
   --color-accent-light: var(--color-accent-light);
+  --color-ink: var(--color-ink);
   --font-sans: var(--font-inter);
   --font-display: var(--font-oswald);
 }

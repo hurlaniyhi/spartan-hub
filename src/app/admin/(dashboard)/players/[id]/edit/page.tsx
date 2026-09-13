@@ -23,8 +23,8 @@ export default async function EditPlayerPage({
   return (
     <div className="max-w-2xl">
       <BackButton fallbackHref="/admin/players" label="Back to Players" className="mb-4" />
-      <h1 className="font-display text-2xl font-bold text-gray-900">Edit Player</h1>
-      <p className="mt-1 mb-6 text-sm text-gray-500">Update {displayName(player)}&apos;s details.</p>
+      <h1 className="font-display text-2xl font-bold text-white">Edit Player</h1>
+      <p className="mt-1 mb-6 text-sm text-white/50">Update {displayName(player)}&apos;s details.</p>
       <PlayerForm
         existingPlayer={{
           id: player._id.toString(),

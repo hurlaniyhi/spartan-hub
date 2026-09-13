@@ -15,8 +15,8 @@ export default async function NewSessionPage({
 
   return (
     <div>
-      <h1 className="mb-1 font-display text-2xl font-bold text-gray-900">Record Session</h1>
-      <p className="mb-6 text-sm text-gray-500">
+      <h1 className="mb-1 font-display text-2xl font-bold text-white">Record Session</h1>
+      <p className="mb-6 text-sm text-white/50">
         Fill this in on the pitch straight after training or a match.
       </p>
       <SessionForm roster={roster} defaultType={defaultType} />

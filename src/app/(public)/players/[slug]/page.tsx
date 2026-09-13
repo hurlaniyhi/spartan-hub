@@ -83,47 +83,47 @@ export default async function PlayerProfilePage({
           </div>
         </div>
 
-        <CardBody className="grid grid-cols-3 gap-4 border-b border-gray-100 text-center">
+        <CardBody className="grid grid-cols-3 gap-4 border-b border-white/10 text-center">
           <StatTile value={totals.appearances} label="Appearances" className="items-center" />
           <StatTile value={totals.goals} label="Goals" accent className="items-center" />
           <StatTile value={totals.assists} label="Assists" accent className="items-center" />
         </CardBody>
 
-        <CardBody className="grid grid-cols-3 gap-4 border-b border-gray-100 text-center">
+        <CardBody className="grid grid-cols-3 gap-4 border-b border-white/10 text-center">
           <StatTile value={totals.wins} label="Wins" tone="success" className="items-center" />
           <StatTile value={totals.draws} label="Draws" tone="neutral" className="items-center" />
           <StatTile value={totals.losses} label="Losses" tone="accent" className="items-center" />
         </CardBody>
 
-        <CardBody className="grid grid-cols-3 gap-4 border-b border-gray-100 text-center text-sm">
+        <CardBody className="grid grid-cols-3 gap-4 border-b border-white/10 text-center text-sm">
           <div>
-            <p className="font-display text-lg font-bold text-gray-900">
+            <p className="font-display text-lg font-bold text-white">
               {formatDecimal(totals.goalsPerAppearance)}
             </p>
-            <p className="text-xs text-gray-500">Goals / App</p>
+            <p className="text-xs text-white/40">Goals / App</p>
           </div>
           <div>
-            <p className="font-display text-lg font-bold text-gray-900">
+            <p className="font-display text-lg font-bold text-white">
               {formatDecimal(totals.assistsPerAppearance)}
             </p>
-            <p className="text-xs text-gray-500">Assists / App</p>
+            <p className="text-xs text-white/40">Assists / App</p>
           </div>
           <div>
-            <p className="font-display text-lg font-bold text-gray-900">
+            <p className="font-display text-lg font-bold text-white">
               {formatPercent(totals.attendancePercentage)}
             </p>
-            <p className="text-xs text-gray-500">Attendance</p>
+            <p className="text-xs text-white/40">Attendance</p>
           </div>
         </CardBody>
 
         {player.bio && (
-          <CardBody className="border-b border-gray-100">
-            <p className="text-sm leading-relaxed text-gray-600">{player.bio}</p>
+          <CardBody className="border-b border-white/10">
+            <p className="text-sm leading-relaxed text-white/60">{player.bio}</p>
           </CardBody>
         )}
 
         <CardBody>
-          <h2 className="mb-4 font-display text-base font-bold text-gray-900">Recent Activity</h2>
+          <h2 className="mb-4 font-display text-base font-bold text-white">Recent Activity</h2>
           {recentActivity.length === 0 ? (
             <EmptyState
               icon={CalendarDays}
@@ -131,27 +131,27 @@ export default async function PlayerProfilePage({
               description={`${displayName(player)} hasn't featured in a training session or match yet.`}
             />
           ) : (
-            <ul className="flex flex-col divide-y divide-gray-100">
+            <ul className="flex flex-col divide-y divide-white/10">
               {recentActivity.map((entry) => (
                 <li key={entry.sessionId} className="flex items-center justify-between gap-3 py-3">
                   <div className="flex items-center gap-3">
                     <Badge variant={entry.type === "match" ? "accent" : "brand"}>{entry.type}</Badge>
-                    <span className="text-sm text-gray-600">{formatSessionDate(entry.date)}</span>
+                    <span className="text-sm text-white/50">{formatSessionDate(entry.date)}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <span
                       className={
-                        entry.attended ? "font-medium text-emerald-600" : "text-gray-400"
+                        entry.attended ? "font-medium text-emerald-400" : "text-white/30"
                       }
                     >
                       {entry.attended ? "Present" : "Absent"}
                     </span>
                     {entry.attended && (
                       <>
-                        <span className="flex items-center gap-1 text-gray-600">
+                        <span className="flex items-center gap-1 text-white/50">
                           <SoccerBallIcon className="size-3.5" /> {entry.goals}
                         </span>
-                        <span className="flex items-center gap-1 text-gray-600">
+                        <span className="flex items-center gap-1 text-white/50">
                           <SportShoe className="size-3.5" /> {entry.assists}
                         </span>
                       </>

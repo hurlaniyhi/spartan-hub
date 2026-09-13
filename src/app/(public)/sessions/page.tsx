@@ -40,7 +40,7 @@ export default async function SessionsPage() {
               <Link key={session.sessionId} href={`/sessions/${session.sessionId}`} className="group block">
                 <Card
                   className={cn(
-                    "overflow-hidden border-l-4 transition-shadow group-hover:shadow-md",
+                    "overflow-hidden border-l-4 transition-[border-color,transform] active:scale-[0.99] group-hover:border-white/20",
                     session.type === "match" ? "border-l-accent" : "border-l-brand"
                   )}
                 >
@@ -50,29 +50,29 @@ export default async function SessionsPage() {
                         <Badge variant={session.type === "match" ? "accent" : "brand"}>
                           {session.type}
                         </Badge>
-                        <span className="text-sm font-medium text-gray-400">
+                        <span className="text-sm font-medium text-white/40">
                           {formatSessionDate(session.date)}
                         </span>
                       </div>
                       {session.opponent ? (
-                        <p className="font-display text-base font-bold text-gray-900">
+                        <p className="font-display text-base font-bold text-white">
                           Spartan FC vs {session.opponent}
                           {session.result && (
-                            <span className="ml-2 font-sans text-sm font-medium text-gray-500">
+                            <span className="ml-2 font-sans text-sm font-medium text-white/50">
                               {session.result}
                             </span>
                           )}
                         </p>
                       ) : (
-                        <p className="font-display text-base font-bold text-gray-900">Training Session</p>
+                        <p className="font-display text-base font-bold text-white">Training Session</p>
                       )}
-                      <p className="mt-1 text-sm text-gray-500">
+                      <p className="mt-1 text-sm text-white/50">
                         {session.playersPresent} Present ·{" "}
-                        <span className="font-medium text-brand-dark">{session.goals} Goals</span> ·{" "}
-                        <span className="font-medium text-accent-dark">{session.assists} Assists</span>
+                        <span className="font-medium text-violet-300">{session.goals} Goals</span> ·{" "}
+                        <span className="font-medium text-red-300">{session.assists} Assists</span>
                       </p>
                     </div>
-                    <ArrowRight className="size-5 shrink-0 text-gray-300 transition-colors group-hover:text-brand" />
+                    <ArrowRight className="size-5 shrink-0 text-white/20 transition-colors group-hover:text-violet-300" />
                   </CardBody>
                 </Card>
               </Link>

@@ -34,14 +34,6 @@ export default async function AdminDashboardPage({
   return (
     <div className="flex flex-col gap-8">
       <div className="relative overflow-hidden rounded-2xl bg-brand-dark px-6 py-6 sm:px-8">
-        <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-            backgroundSize: "18px 18px",
-          }}
-        />
-        <div className="absolute -right-12 -top-12 size-40 rounded-full bg-accent/20 blur-3xl" />
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="font-display text-2xl font-bold text-white">Spartan FC Dashboard</h1>
@@ -52,7 +44,7 @@ export default async function AdminDashboardPage({
       </div>
 
       <Card>
-        <CardBody className="grid grid-cols-2 gap-6 border-b border-gray-100 sm:grid-cols-3 lg:grid-cols-6">
+        <CardBody className="grid grid-cols-2 gap-6 border-b border-white/10 sm:grid-cols-3 lg:grid-cols-6">
           <StatTile value={snapshot.activePlayers} label="Active Players" icon={<Users className="size-4" />} />
           <StatTile value={snapshot.inactivePlayers} label="Inactive Players" icon={<UserX className="size-4" />} />
           <StatTile value={snapshot.trainingSessions} label="Training Sessions" icon={<CalendarDays className="size-4" />} />
@@ -68,7 +60,7 @@ export default async function AdminDashboardPage({
       </Card>
 
       <div>
-        <h2 className="mb-3 font-display text-base font-bold text-gray-900">Quick Actions</h2>
+        <h2 className="mb-3 font-display text-base font-bold text-white">Quick Actions</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <Button href="/admin/players/new" variant="accent" leftIcon={<UserPlus className="size-4" />}>
             Add Player

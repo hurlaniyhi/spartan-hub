@@ -11,8 +11,8 @@ export default function NotFound() {
         height={72}
         className="rounded-full opacity-80"
       />
-      <h1 className="font-display text-2xl font-bold text-gray-900">Page Not Found</h1>
-      <p className="max-w-sm text-sm text-gray-500">
+      <h1 className="font-display text-2xl font-bold text-white">Page Not Found</h1>
+      <p className="max-w-sm text-sm text-white/50">
         This page doesn&apos;t exist, or may have moved. Let&apos;s get you back on the pitch.
       </p>
       <Button href="/" variant="primary" className="mt-2">

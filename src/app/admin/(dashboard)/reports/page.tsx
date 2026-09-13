@@ -31,19 +31,19 @@ export default async function AdminReportsPage({
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-gray-900">Reports</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="font-display text-2xl font-bold text-white">Reports</h1>
+          <p className="mt-1 text-sm text-white/50">
             Download Spartan FC statistics as a CSV or PDF — the totals reflect standings at that point in time.
           </p>
         </div>
-        <SeasonSwitcher seasons={seasons} current={season} variant="light" />
+        <SeasonSwitcher seasons={seasons} current={season} />
       </div>
 
       <Card>
         <CardBody className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-display text-base font-bold text-gray-900">Current Statistics</p>
-            <p className="text-sm text-gray-500">
+            <p className="font-display text-base font-bold text-white">Current Statistics</p>
+            <p className="text-sm text-white/50">
               {season === ALL_SEASONS
                 ? "Every session recorded so far, across all seasons."
                 : `Every session recorded so far in the ${season} season.`}
@@ -72,13 +72,13 @@ export default async function AdminReportsPage({
 
       <Card>
         <CardBody>
-          <p className="mb-3 font-display text-base font-bold text-gray-900">Statistics As Of a Date</p>
+          <p className="mb-3 font-display text-base font-bold text-white">Statistics As Of a Date</p>
           <DateExportForm key={season} season={season} />
         </CardBody>
       </Card>
 
       <div>
-        <h2 className="mb-3 font-display text-base font-bold text-gray-900">Statistics As Of a Session</h2>
+        <h2 className="mb-3 font-display text-base font-bold text-white">Statistics As Of a Session</h2>
         {sessions.length === 0 ? (
           <EmptyState
             icon={CalendarDays}
@@ -96,7 +96,7 @@ export default async function AdminReportsPage({
                 <CardBody className="flex flex-wrap items-center justify-between gap-3 py-3">
                   <div className="flex items-center gap-2">
                     <Badge variant={session.type === "match" ? "accent" : "brand"}>{session.type}</Badge>
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-white/70">
                       {formatSessionDate(session.date)}
                       {session.opponent ? ` vs ${session.opponent}` : ""}
                     </span>

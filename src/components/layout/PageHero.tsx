@@ -13,17 +13,6 @@ export function PageHero({
 }) {
   return (
     <div className="relative overflow-hidden bg-brand-dark">
-      <div
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: "20px 20px",
-        }}
-      />
-      <div className="absolute -right-16 -top-16 size-56 rounded-full bg-accent/20 blur-3xl" />
-      <div className="absolute -left-10 bottom-0 size-40 rounded-full bg-brand/40 blur-3xl" />
-
       <div className="relative mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-10">
         <div className="flex items-center gap-3">
           <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white ring-1 ring-white/15">

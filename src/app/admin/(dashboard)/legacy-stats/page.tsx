@@ -37,8 +37,8 @@ export default async function AdminLegacyStatsPage({
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-gray-900">Legacy Stats</h1>
-          <p className="mt-1 max-w-xl text-sm text-gray-500">
+          <h1 className="font-display text-2xl font-bold text-white">Legacy Stats</h1>
+          <p className="mt-1 max-w-xl text-sm text-white/50">
             One-time import for stats from before Spartan Hub — appearances, goals and assists entered
             here get folded straight into each player&apos;s totals, leaderboards and reports for the
             season, same as any recorded session.
@@ -47,7 +47,7 @@ export default async function AdminLegacyStatsPage({
         <LegacySeasonPicker season={season} />
       </div>
 
-      <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+      <div className="flex items-start gap-2 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-300">
         <span>
           Make sure these totals don&apos;t already include any training or match you&apos;ve recorded
           in Spartan Hub for {season} — otherwise those sessions will be double-counted.
@@ -56,8 +56,8 @@ export default async function AdminLegacyStatsPage({
 
       <Card>
         <CardBody>
-          <p className="mb-1 font-display text-base font-bold text-gray-900">Team Totals</p>
-          <p className="mb-4 text-sm text-gray-500">
+          <p className="mb-1 font-display text-base font-bold text-white">Team Totals</p>
+          <p className="mb-4 text-sm text-white/50">
             How many trainings and matches the team held in {season}, and the resulting record —
             these feed the training/match counts and win/draw/loss tiles across the app.
           </p>
@@ -68,10 +68,10 @@ export default async function AdminLegacyStatsPage({
       <Card>
         <CardBody>
           {rows.length === 0 ? (
-            <p className="py-6 text-center text-sm text-gray-500">No players yet — add players first.</p>
+            <p className="py-6 text-center text-sm text-white/50">No players yet — add players first.</p>
           ) : (
             <>
-              <div className="mb-1 hidden grid-cols-[1fr_auto_auto] gap-3 px-1 text-xs font-semibold uppercase tracking-wide text-gray-400 sm:grid">
+              <div className="mb-1 hidden grid-cols-[1fr_auto_auto] gap-3 px-1 text-xs font-semibold uppercase tracking-wide text-white/30 sm:grid">
                 <span>Player</span>
                 <span className="pr-1 text-center">Appearances · Goals · Assists</span>
                 <span />

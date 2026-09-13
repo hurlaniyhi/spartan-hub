@@ -38,7 +38,7 @@ export function PhotoCropModal({
 
   return (
     <Modal open onClose={onCancel} title="Position the Photo">
-      <p className="mb-3 -mt-2 text-sm text-gray-500">
+      <p className="mb-3 -mt-2 text-sm text-white/50">
         Drag to reposition, use the slider to zoom. The circle shows exactly what players will see.
       </p>
 
@@ -57,7 +57,7 @@ export function PhotoCropModal({
       </div>
 
       <div className="mt-4 flex items-center gap-3">
-        <ZoomIn className="size-4 shrink-0 text-gray-400" />
+        <ZoomIn className="size-4 shrink-0 text-white/40" />
         <input
           type="range"
           min={1}
@@ -65,7 +65,7 @@ export function PhotoCropModal({
           step={0.01}
           value={zoom}
           onChange={(event) => setZoom(Number(event.target.value))}
-          className="h-2 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-brand"
+          className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-brand"
           aria-label="Zoom"
         />
       </div>

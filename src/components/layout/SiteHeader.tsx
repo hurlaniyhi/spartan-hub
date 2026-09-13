@@ -11,7 +11,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-ink/80 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-1 sm:flex">
@@ -24,8 +24,8 @@ export function SiteHeader() {
                 className={cn(
                   "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
                   active
-                    ? "bg-brand-light text-brand-dark"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    ? "bg-white/10 text-white"
+                    : "text-white/60 hover:bg-white/5 hover:text-white"
                 )}
               >
                 {item.label}
@@ -35,7 +35,7 @@ export function SiteHeader() {
         </nav>
         <Link
           href="/admin"
-          className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
+          className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-white/30 transition-colors hover:bg-white/5 hover:text-white/70"
         >
           <ShieldCheck className="size-4" />
           <span>Admin</span>

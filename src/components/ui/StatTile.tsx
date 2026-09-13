@@ -3,17 +3,17 @@ import { cn } from "@/lib/cn";
 type Tone = "brand" | "accent" | "success" | "neutral";
 
 const ICON_TONE_CLASSES: Record<Tone, string> = {
-  brand: "bg-gradient-to-br from-brand to-brand-dark",
-  accent: "bg-gradient-to-br from-accent to-accent-dark",
-  success: "bg-gradient-to-br from-emerald-400 to-emerald-600",
+  brand: "bg-gradient-to-br from-brand to-brand-dark shadow-[0_0_16px_2px_rgba(41,5,163,0.45)]",
+  accent: "bg-gradient-to-br from-accent to-accent-dark shadow-[0_0_16px_2px_rgba(219,38,29,0.4)]",
+  success: "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_0_16px_2px_rgba(16,185,129,0.35)]",
   neutral: "bg-gradient-to-br from-gray-400 to-gray-600",
 };
 
 const VALUE_TONE_CLASSES: Record<Tone, string> = {
-  brand: "text-brand-dark",
-  accent: "text-accent-dark",
-  success: "text-emerald-600",
-  neutral: "text-gray-500",
+  brand: "text-violet-300",
+  accent: "text-red-300",
+  success: "text-emerald-400",
+  neutral: "text-white/60",
 };
 
 export function StatTile({
@@ -39,7 +39,7 @@ export function StatTile({
       {icon && (
         <div
           className={cn(
-            "mb-1.5 flex size-9 items-center justify-center rounded-full text-white shadow-sm",
+            "mb-1.5 flex size-9 items-center justify-center rounded-full text-white",
             ICON_TONE_CLASSES[resolvedTone]
           )}
         >
@@ -54,7 +54,7 @@ export function StatTile({
       >
         {value}
       </span>
-      <span className="text-sm font-medium text-gray-500">{label}</span>
+      <span className="text-sm font-medium text-white/50">{label}</span>
     </div>
   );
 }
