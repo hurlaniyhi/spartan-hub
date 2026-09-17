@@ -20,6 +20,8 @@ export const playerFormSchema = z.object({
     .min(1, "Please enter the date this player joined.")
     .refine((value) => !Number.isNaN(Date.parse(value)), "Please enter a valid date."),
   bio: z.string().trim().max(1000, "Bio must be 1000 characters or fewer.").optional(),
+  phoneNumber: z.string().trim().max(30, "Phone number is too long.").optional(),
+  homeAddress: z.string().trim().max(200, "Home address is too long.").optional(),
 });
 
 export type PlayerFormValues = z.infer<typeof playerFormSchema>;

@@ -37,6 +37,8 @@ export default async function EditPlayerPage({
           status: player.status as "active" | "inactive",
           dateJoined: format(new Date(player.dateJoined), "yyyy-MM-dd"),
           bio: player.bio ?? undefined,
+          phoneNumber: player.phoneNumber ?? undefined,
+          homeAddress: player.homeAddress ?? undefined,
           photoUrl: player.photoUrl ?? undefined,
           isCaptain: player.isCaptain ?? false,
         }}

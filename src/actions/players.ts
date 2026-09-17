@@ -51,6 +51,8 @@ export async function savePlayer(
     status: formData.get("status") || "active",
     dateJoined: formData.get("dateJoined"),
     bio: formData.get("bio") || undefined,
+    phoneNumber: formData.get("phoneNumber") || undefined,
+    homeAddress: formData.get("homeAddress") || undefined,
   };
   const isCaptain = formData.get("isCaptain") === "true";
 

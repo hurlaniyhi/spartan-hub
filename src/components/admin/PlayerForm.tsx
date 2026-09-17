@@ -85,6 +85,8 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
     formData.set("status", values.status);
     formData.set("dateJoined", values.dateJoined);
     if (values.bio) formData.set("bio", values.bio);
+    if (values.phoneNumber) formData.set("phoneNumber", values.phoneNumber);
+    if (values.homeAddress) formData.set("homeAddress", values.homeAddress);
     formData.set("isCaptain", String(isCaptain));
     if (photoFile) formData.set("photo", photoFile);
 
@@ -197,6 +199,19 @@ export function PlayerForm({ existingPlayer }: { existingPlayer?: ExistingPlayer
           label="Date Joined"
           error={errors.dateJoined?.message}
           {...register("dateJoined")}
+        />
+        <Input
+          id="phoneNumber"
+          type="tel"
+          label="Phone Number (optional)"
+          error={errors.phoneNumber?.message}
+          {...register("phoneNumber")}
+        />
+        <Input
+          id="homeAddress"
+          label="Home Address (optional)"
+          error={errors.homeAddress?.message}
+          {...register("homeAddress")}
         />
       </div>
 
